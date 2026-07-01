@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>My Leaves | Employee Portal — Nexus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- <link rel="stylesheet" href="../css/leave.css" /> -->
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary:       #1f6f7f;
+            --primary-light: #2a8fa1;
+            --primary-dark:  #145c6b;
+            --accent:        #6faf2e;
+            --accent-light:  #8fd44a;
+            --sidebar-w:     260px;
+            --sidebar-collapsed-w: 84px;
+            --header-h:      64px;
+            --bg:            #f8fafc;
+            --card-bg:       #ffffff;
+            --border:        #e2e8f0;
+            --text-main:     #0f172a;
+            --text-muted:    #64748b;
+            --text-light:    #94a3b8;
+            --sidebar-hover:  rgba(255,255,255,0.10);
+            --sidebar-active: rgba(255,255,255,0.16);
+            --sidebar-text:   rgba(255,255,255,0.75);
+            --green:         #1a7f4b;
+            --green-bg:      rgba(26,127,75,0.10);
+            --red:           #b91c1c;
+            --red-bg:        rgba(185,28,28,0.10);
+            --yellow:        #92690a;
+            --yellow-bg:     rgba(212,160,23,0.13);
+            --blue:          #1254a4;
+            --blue-bg:       rgba(18,84,164,0.10);
+            --radius:        12px;
+            --shadow:        0 2px 12px rgba(31,111,127,0.08);
+            --shadow-hover:  0 6px 24px rgba(31,111,127,0.16);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: linear-gradient(180deg, #1f6f7f 0%, #145c6b 100%);
+            min-height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+            overflow: hidden;
+        }
+        .sidebar::before,
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.25;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .sidebar::before { width: 260px; height: 260px; top: -80px; right: -90px; background: #5fafc2; }
+        .sidebar::after  { width: 300px; height: 300px; bottom: -140px; right: -120px; background: #0e3c46; opacity: 0.18; }
+
+        .sidebar-header,
+        .sidebar-nav,
+        .sidebar-footer { position: relative; z-index: 2; }
+
+        .sidebar.collapsed { width: var(--sidebar-collapsed-w); }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            height: var(--header-h);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            flex-shrink: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-decoration: none;
+            overflow: hidden;
+        }
+        .logo i { font-size: 20px; color: #fff; min-width: 20px; flex-shrink: 0; }
+        .logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: #fff;
+            white-space: nowrap;
+            transition: opacity 0.2s, width 0.2s;
+        }
+        
+        .sidebar.collapsed 
+        .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: var(--sidebar-text);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        
+        .collapse-btn:hover { color: #fff; }
+        .collapse-btn i { font-size: 14px; transition: transform 0.3s; }
+        .sidebar.collapsed .collapse-btn i { transform: rotate(180deg); }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 0; }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.20); border-radius: 10px; }
+
+        .nav-menu { list-style: none; }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px;
+            margin: 2px 8px;
+            border-radius: 8px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.25s ease,
+            color 0.2s;
+            overflow: hidden;
+        }
+        .nav-link i { font-size: 15px; min-width: 20px; text-align: center; flex-shrink: 0; }
+        .nav-link:hover  { background: var(--sidebar-hover);  color: #fff; }
+        .nav-link.active { background: var(--sidebar-active); color: #fff; font-weight: 600; }
+
+        .nav-text { transition: opacity 0.2s, width 0.2s; }
+
+        
+        .sidebar.collapsed .nav-text { opacity: 0; width: 0; overflow: hidden; }
+        .sidebar.collapsed .nav-link { justify-content: center; padding: 10px 0; margin: 2px 0; }
+
+        .sidebar-footer {
+            padding: 12px 8px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            flex-shrink: 0;
+        }
+
+        .logout-btn {
+            display: flex; align-items: center; gap: 12px;
+            width: 100%; padding: 13px 16px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.20);
+            border-radius: 12px; color: #fff;
+            cursor: pointer; font-size: 14px; font-weight: 500;
+            transition: all 0.25s ease;
+        }
+        .logout-btn i { font-size: 15px; min-width: 20px; text-align: center; flex-shrink: 0; }
+        .logout-btn:hover { background: rgba(239,68,68,0.14); color: #fca5a5; }
+        .sidebar.collapsed .logout-btn { justify-content: center; padding: 10px 0; }
+        .sidebar.collapsed .logout-btn .nav-text { opacity: 0; width: 0; overflow: hidden; }
+        .sidebar.mobile-open { transform: translateX(0) !important; width: var(--sidebar-w) !important; }
+
+        /* ========== MAIN LAYOUT ========== */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+        .main-content.collapsed { margin-left: var(--sidebar-collapsed-w); }
+
+        /* ========== HEADER ========== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            height: var(--header-h);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            box-shadow: 0 1px 8px rgba(31,111,127,0.06);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+        }
+        .mobile-toggle:hover { background: #e6f4f6; }
+        
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px; 
+            font-weight: 600;
+            color: #145c6b;
+        }
+        .page-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 15px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover { border-color: var(--primary); color: var(--primary); background: #e6f4f6; }
+        .notification-badge {
+            position: absolute;
+            top: -3px; right: -3px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .user-profile { position: relative; }
+        
+          .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: transparent;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 40px;
+            cursor: pointer;
+            text-align: left;
+            transition: var(--transition-default);
+        }
+
+        
+        .profile-btn:hover { border-color: var(--primary); background: #e6f4f6; }
+        
+        .avatar {
+            width: 42px;
+            height: 42px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 600;
+        }
+        
+        .user-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
+        .user-role { font-size: 11px; color: var(--text-muted); }
+        .dropdown-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; }
+        .profile-btn.open .dropdown-arrow { transform: rotate(180deg); }
+
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-hover);
+            min-width: 180px;
+            z-index: 400;
+            overflow: hidden;
+        }
+        .profile-dropdown.open { display: block; }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 11px 16px;
+            font-size: 13px;
+            color: var(--text-main);
+            text-decoration: none;
+            background: none; border: none; width: 100%;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .dropdown-item:hover { background: #e6f4f6; color: var(--primary); }
+        .dropdown-item i { color: var(--primary); font-size: 14px; min-width: 16px; }
+        .dropdown-item.logout-item { color: var(--red); }
+        .dropdown-item.logout-item i { color: var(--red); }
+        .dropdown-item.logout-item:hover { background: rgba(185,28,28,0.07); }
+        .dropdown-divider { height: 1px; background: var(--border); }
+
+        /* ========== CONTENT ========== */
+        .content-wrapper { padding: 24px; flex: 1; }
+
+        .page-banner {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+            border-radius: 16px;
+            padding: 24px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-banner::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: rgba(111,175,46,0.10);
+        }
+        .page-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; right: 60px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
+        .banner-text h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .banner-text p { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+        .banner-actions { display: flex; gap: 10px; z-index: 1; }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--accent); color: #fff; border: none;
+            padding: 9px 18px; border-radius: 8px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(111,175,46,0.35); }
+
+        .btn-secondary {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: rgba(255,255,255,0.15); color: #fff;
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 9px 18px; border-radius: 8px;
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.22); }
+
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: transparent; color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .btn-outline:hover { background: var(--primary); color: #fff; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 18px;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .stat-card.purple::before { background: var(--primary); }
+        .stat-card.red::before    { background: #dc2626; }
+        .stat-card.green::before  { background: #16a34a; }
+        .stat-card.orange::before { background: #ea580c; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+        .stat-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0;
+        }
+        .stat-icon.purple { background: rgba(31,111,127,0.10); color: var(--primary); }
+        .stat-icon.red    { background: rgba(220,38,38,0.10);  color: #dc2626; }
+        .stat-icon.green  { background: rgba(22,163,74,0.10);  color: #16a34a; }
+        .stat-icon.orange { background: rgba(234,88,12,0.10);  color: #ea580c; }
+
+        .stat-info h3  { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
+        .stat-value    { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 700; color: var(--text-main); line-height: 1; }
+        .stat-text     { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+        .tabs-bar {
+            display: flex; gap: 4px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 8px 18px; border-radius: 8px;
+            font-size: 13px; font-weight: 500;
+            border: none; background: transparent;
+            color: var(--text-muted); cursor: pointer;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .tab-btn:hover  { color: var(--primary); background: rgba(31,111,127,0.06); }
+        .tab-btn.active { background: var(--primary); color: #fff; font-weight: 600; }
+        .tab-content        { display: none; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-header h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px; font-weight: 600;
+            color: var(--primary);
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .balance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .balance-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            transition: all 0.25s;
+        }
+        .balance-card:hover { border-color: var(--primary-light); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .balance-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .balance-num   { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 8px; }
+        .balance-bar   { height: 6px; background: var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 5px; }
+        .balance-fill  { height: 100%; border-radius: 10px; transition: width 0.6s ease; }
+        .balance-sub   { font-size: 10px; color: var(--text-light); }
+
+        .pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 600;
+        }
+        .pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+        .pill.pending::before   { background: var(--yellow); }
+        .pill.approved::before  { background: var(--green); }
+        .pill.rejected::before  { background: var(--red); }
+        .pill.cancelled::before { background: #6c757d; }
+        .pill.pending   { background: var(--yellow-bg); color: var(--yellow); }
+        .pill.approved  { background: var(--green-bg);  color: var(--green); }
+        .pill.rejected  { background: var(--red-bg);    color: var(--red); }
+        .pill.cancelled { background: rgba(108,117,125,0.15); color: #495057; }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            text-align: left; padding: 9px 10px;
+            font-size: 11px; font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap; background: var(--bg);
+        }
+        thead th:first-child { border-radius: 6px 0 0 0; }
+        thead th:last-child  { border-radius: 0 6px 0 0; }
+        tbody tr {
+            border-bottom: 1px solid #edf2f7;
+            cursor: pointer; transition: background 0.15s;
+        }
+        tbody tr:hover { background: rgba(31,111,127,0.03); }
+        tbody td { padding: 10px; font-size: 12px; color: var(--text-muted); vertical-align: middle; }
+        tbody td:first-child { font-weight: 600; color: var(--primary); }
+
+        .progress-bar { height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 10px; transition: width 0.5s; }
+
+        .modal {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15,23,42,0.55);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+            backdrop-filter: blur(3px);
+        }
+        .modal.active { display: flex; }
+        .modal-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            width: 95%; max-width: 560px;
+            max-height: 92vh; overflow-y: auto;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            padding: 18px 24px;
+            border-radius: 16px 16px 0 0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-header h3 { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: #fff; }
+        .modal-header p  { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+        .modal-close {
+            background: rgba(255,255,255,0.15);
+            border: none; width: 30px; height: 30px;
+            border-radius: 50%; cursor: pointer;
+            color: #fff; font-size: 16px;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.25); }
+        .modal-body   { padding: 24px; }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .form-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group.full { grid-column: 1 / -1; }
+        label { font-size: 12px; font-weight: 600; color: var(--primary); }
+        input, select, textarea {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background: var(--card-bg);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(31,111,127,0.10);
+        }
+        input[readonly] { background: var(--bg); color: var(--text-muted); cursor: not-allowed; }
+
+        .emp-info-bar {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 20px;
+        }
+        .emp-info-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--primary); color: #fff;
+            font-weight: 700; font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-family: 'Poppins', sans-serif;
+        }
+
+        .section-label {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 14px; margin-top: 6px;
+        }
+        .section-label span {
+            font-size: 10px; font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            white-space: nowrap;
+        }
+        .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .balance-panel {
+            display: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            margin-bottom: 14px;
+        }
+        .balance-panel.ok   { background: var(--blue-bg);   border: 1px solid rgba(18,84,164,0.2);   color: var(--blue); }
+        .balance-panel.warn { background: var(--yellow-bg); border: 1px solid rgba(212,160,23,0.3); color: var(--yellow); }
+
+        .day-chip {
+            display: none;
+            align-items: center; gap: 6px;
+            background: rgba(31,111,127,0.08);
+            border: 1px solid rgba(31,111,127,0.20);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px; font-weight: 600;
+            color: var(--primary); white-space: nowrap;
+        }
+
+        .alert-info {
+            background: var(--blue-bg);
+            border: 1px solid rgba(18,84,164,0.2);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: var(--blue);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 36px;
+            color: var(--border);
+            display: block;
+            margin-bottom: 12px;
+        }
+        .empty-state p { font-size: 13px; }
+        .empty-state small { font-size: 11px; color: var(--text-light); display: block; margin-top: 4px; }
+
+        /* Calendar */
+        .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; }
+        .cal-day-header {
+            text-align: center;
+            font-size: 11px; font-weight: 600;
+            color: var(--text-muted); padding: 6px 0;
+        }
+        .cal-day {
+            text-align: center; padding: 8px 4px;
+            border-radius: 8px; font-size: 12px; font-weight: 500;
+            border: 1px solid transparent; transition: all 0.15s; cursor: default;
+        }
+        .cal-day.today    { border: 2px solid var(--primary); font-weight: 800; }
+        .cal-day.weekend  { background: var(--bg);         color: var(--text-light); }
+        .cal-day.approved { background: var(--green-bg);   color: var(--green);   border-color: rgba(26,127,75,0.25); }
+        .cal-day.pending  { background: var(--yellow-bg);  color: var(--yellow);  border-color: rgba(212,160,23,0.3); }
+        .cal-day.rejected { background: var(--red-bg);     color: var(--red);     border-color: rgba(185,28,28,0.2); }
+
+        .cal-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+        .cal-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+        .cal-legend-dot  { width: 10px; height: 10px; border-radius: 50%; }
+
+        .recent-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #edf2f7;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .recent-item:last-child { border-bottom: none; }
+        .recent-item:hover { background: rgba(31,111,127,0.02); }
+        .recent-item-title { font-size: 13px; font-weight: 600; color: var(--primary); }
+        .recent-item-sub   { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+        .policy-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+        .policy-row:last-child { border-bottom: none; }
+        .policy-row span   { font-size: 12px; color: var(--text-muted); }
+        .policy-row strong { font-size: 12px; color: var(--primary); }
+
+        .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .three-col { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 12px 20px; border-radius: 10px;
+            color: #fff; font-size: 13px; font-weight: 500;
+            z-index: 2000; animation: toastIn 0.3s ease;
+            display: flex; align-items: center; gap: 8px;
+            max-width: 320px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        .toast.success { background: var(--accent); }
+        .toast.error   { background: #dc2626; }
+        .toast.info    { background: var(--primary); }
+        @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; }
+
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 199; }
+        .overlay.active { display: block; }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            .three-col  { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.mobile-open { transform: translateX(0); width: var(--sidebar-w) !important; }
+            .main-content { margin-left: 0 !important; }
+            .mobile-toggle { display: block; }
+            .stats-grid   { grid-template-columns: repeat(2,1fr); }
+            .balance-grid { grid-template-columns: repeat(2,1fr); }
+            .content-wrapper { padding: 16px; }
+            .page-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .two-col   { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid   { grid-template-columns: 1fr 1fr; }
+            .balance-grid { grid-template-columns: 1fr 1fr; }
+            .tabs-bar { gap: 2px; }
+            .tab-btn  { padding: 7px 12px; font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-briefcase"></i>
+            <span class="logo-text">Employee Portal</span>
+        </div>
+        <button class="collapse-btn" id="collapseSidebarBtn" aria-label="Toggle sidebar">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    <nav class="sidebar-nav">
+        <ul class="nav-menu">
+            <li><a href="../pages/dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a></li>
+            <li><a href="../pages/profile.html"   class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li>
+            <li><a href="../pages/attendance.html" class="nav-link"><i class="fas fa-clock"></i><span class="nav-text">Attendance</span></a></li>
+            <li><a href="../pages/expenses.html" class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li>
+            <li><a href="../pages/leave.html" class="nav-link active"><i class="fas fa-umbrella-beach"></i><span class="nav-text">Leave</span></a></li>
+            <li><a href="../pages/payroll.html" class="nav-link"><i class="fas fa-money-bill-wave"></i><span class="nav-text">Payroll</span></a></li>
+            <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li>
+
+            <li><a href="../pages/under-construction.html"  class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <button class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>
+        </button>
+    </div>
+</aside>
+
+<!-- ========== MAIN CONTENT ========== -->
+<div class="main-content" id="mainContent">
+
+    <header class="header">
+        <div class="header-left">
+            <button class="mobile-toggle" id="mobileToggleBtn"><i class="fas fa-bars"></i></button>
+            <div>
+                <div class="page-title">Leave Management</div>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="notification-bell">
+                <button class="icon-btn" id="notificationBtn">
+                    <i class="far fa-bell"></i>
+                    <span class="notification-badge" id="notifBadge" style="display:none;">0</span>
+                </button>
+            </div>
+            <div class="user-profile">
+                <button class="profile-btn" id="profileDropdownBtn">
+                    <div class="avatar" id="userAvatar">-</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Employee</div>
+                        <div class="user-role" id="userRole"></div>
+                    </div>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="../pages/profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i><span>My Profile</span></a>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-item">
+                        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+
+        <!-- Banner -->
+        <div class="page-banner">
+            <div class="banner-text">
+                <h2><i class="fas fa-umbrella-beach" style="margin-right:8px;color:var(--accent);"></i>My Leave Dashboard</h2>
+            </div>
+            <div class="banner-actions">
+                <button class="btn-secondary" onclick="switchTab('calendar')"><i class="fas fa-calendar-alt"></i> Calendar</button>
+                <button class="btn-primary" onclick="openApplyModal()"><i class="fas fa-plus"></i> Apply for Leave</button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card purple">
+                <div class="stat-icon purple"><i class="fas fa-calendar-check"></i></div>
+                <div class="stat-info">
+                    <h3>Total Allotted</h3>
+                    <p class="stat-value" id="statTotal">—</p>
+                    <span class="stat-text">days this year</span>
+                </div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon red"><i class="fas fa-calendar-minus"></i></div>
+                <div class="stat-info">
+                    <h3>Leaves Taken</h3>
+                    <p class="stat-value" id="statUsed">—</p>
+                    <span class="stat-text">approved leaves</span>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon green"><i class="fas fa-calendar-plus"></i></div>
+                <div class="stat-info">
+                    <h3>Balance Left</h3>
+                    <p class="stat-value" id="statRemaining">—</p>
+                    <span class="stat-text">days available</span>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon orange"><i class="fas fa-hourglass-half"></i></div>
+                <div class="stat-info">
+                    <h3>Pending</h3>
+                    <p class="stat-value" id="statPending">—</p>
+                    <span class="stat-text">awaiting approval</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-bar">
+            <button class="tab-btn active" data-tab="overview"><i class="fas fa-home" style="margin-right:5px;"></i>Overview</button>
+            <button class="tab-btn" data-tab="myapplications"><i class="fas fa-list" style="margin-right:5px;"></i>My Applications</button>
+            <button class="tab-btn" data-tab="balance"><i class="fas fa-balance-scale" style="margin-right:5px;"></i>Leave Balance</button>
+            <button class="tab-btn" data-tab="calendar"><i class="fas fa-calendar-alt" style="margin-right:5px;"></i>Calendar</button>
+        </div>
+
+        <!-- ===== OVERVIEW ===== -->
+        <div id="tab-overview" class="tab-content active">
+            <div class="balance-grid" id="quickBalanceCards"></div>
+            <div class="three-col">
+                <div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Recent Applications</h3>
+                            <button class="btn-outline btn-sm" onclick="switchTab('myapplications')">View All</button>
+                        </div>
+                        <div id="recentList"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card" style="margin-bottom:16px;">
+                        <div class="card-header"><h3><i class="fas fa-info-circle"></i> Leave Policy</h3></div>
+                        <div id="policyInfo"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3><i class="fas fa-chart-pie"></i> Usage Overview</h3></div>
+                        <canvas id="miniDonut" height="160"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MY APPLICATIONS ===== -->
+        <div id="tab-myapplications" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clipboard-list"></i> All Leave Applications</h3>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <select id="filterStatus" onchange="renderApplications()" style="width:130px;font-size:12px;">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <select id="filterType" onchange="renderApplications()" style="width:140px;font-size:12px;"></select>
+                        <button onclick="exportMyLeaves()" class="btn-outline btn-sm"><i class="fas fa-download"></i> Export</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Leave Type</th><th>From</th><th>To</th><th>Days</th>
+                                <th>Reason</th><th>Applied On</th><th>Status</th>
+                                <th>HR Remarks</th><th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appTableBody"></tbody>
+                    </table>
+                    <div id="appEmpty" style="display:none;" class="empty-state">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No leave applications found.</p>
+                        <button class="btn-primary btn-sm" style="margin-top:12px;" onclick="openApplyModal()"><i class="fas fa-plus"></i> Apply Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== BALANCE ===== -->
+        <div id="tab-balance" class="tab-content">
+            <div class="balance-grid" id="balanceCards"></div>
+            <div class="card">
+                <div class="card-header"><h3><i class="fas fa-table"></i> Approved Leave History</h3></div>
+                <div id="balanceDetailTable"></div>
+            </div>
+        </div>
+
+        <!-- ===== CALENDAR ===== -->
+        <div id="tab-calendar" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-calendar-alt"></i> <span id="calTitle"></span></h3>
+                    <div style="display:flex;gap:6px;">
+                        <button onclick="changeMonth(-1)" class="btn-outline btn-sm"><i class="fas fa-chevron-left"></i></button>
+                        <button onclick="changeMonth(1)"  class="btn-outline btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div id="calGrid"></div>
+                <div class="cal-legend">
+                    <div class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--green);"></span>Approved</div>
+                    <div class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--yellow);"></span>Pending</div>
+                    <div class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--red);"></span>Rejected</div>
+                    <div class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--border);"></span>Weekend</div>
+                    <div class="cal-legend-item"><span class="cal-legend-dot" style="background:var(--primary);border-radius:3px;"></span>Today</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ========== APPLY LEAVE MODAL ========== -->
+<div id="applyModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h3><i class="fas fa-calendar-plus" style="margin-right:8px;"></i>Apply for Leave</h3>
+                <p>Submit your request for HR/Admin approval</p>
+            </div>
+            <button class="modal-close" onclick="closeModal('applyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="emp-info-bar">
+                <div class="emp-info-avatar" id="ap-avatar">--</div>
+                <div style="flex:1;">
+                    <div style="font-size:13px;font-weight:700;color:var(--primary);" id="ap-dispName">—</div>
+                    <div style="font-size:11px;color:var(--text-muted);" id="ap-dispMeta">—</div>
+                </div>
+                <span style="background:rgba(31,111,127,0.10);color:var(--primary);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;" id="ap-dispType">—</span>
+            </div>
+
+            <div class="section-label"><span>Employee Details</span></div>
+            <div class="form-grid" style="margin-bottom:14px;">
+                <div class="form-group">
+                    <label>Employee ID</label>
+                    <input type="text" id="ap-empId" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Employee Name</label>
+                    <input type="text" id="ap-empName" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" id="ap-dept" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Employee Type</label>
+                    <input type="text" id="ap-empType" readonly>
+                </div>
+            </div>
+
+            <div class="section-label"><span>Leave Details</span></div>
+            <div class="form-grid" style="margin-bottom:14px;">
+                <div class="form-group">
+                    <label>Leave Type *</label>
+                    <select id="ap-type" onchange="apCheckBalance()">
+                        <option value="">Select leave type</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Leave Mode</label>
+                    <select id="ap-mode">
+                        <option value="Full Day">Full Day</option>
+                        <option value="Half Day - Morning">Half Day – Morning</option>
+                        <option value="Half Day - Afternoon">Half Day – Afternoon</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>From Date *</label>
+                    <input type="date" id="ap-from" oninput="apCalcDays()">
+                </div>
+                <div class="form-group">
+                    <label>To Date *</label>
+                    <input type="date" id="ap-to" oninput="apCalcDays()">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:14px;">
+                <label>Number of Days *</label>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <input type="number" id="ap-days" min="1" placeholder="Auto-calculated or enter manually" oninput="apCheckBalance()" style="flex:1;">
+                    <div class="day-chip" id="ap-dayChip">
+                        <i class="fas fa-sun" style="font-size:11px;"></i>
+                        <span id="ap-dayText">0 days</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="balance-panel" id="ap-balPanel"></div>
+
+            <div class="section-label"><span>Reason & Notes</span></div>
+            <div class="form-group" style="margin-bottom:14px;">
+                <label>Reason *</label>
+                <input type="text" id="ap-reason" placeholder="e.g. Family function, Medical appointment...">
+            </div>
+            <div class="form-group" style="margin-bottom:18px;">
+                <label>Additional Notes</label>
+                <textarea id="ap-desc" rows="3" placeholder="Doctor's note reference, contact during leave, etc."></textarea>
+            </div>
+
+            <div class="alert-info">
+                <i class="fas fa-info-circle" style="margin-right:6px;"></i>
+                Your request will be sent to HR Admin for approval. You'll be notified once a decision is made.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="apResetForm()" class="btn-outline btn-sm"><i class="fas fa-redo"></i> Reset</button>
+            <div style="display:flex;gap:10px;">
+                <button onclick="closeModal('applyModal')" class="btn-outline">Cancel</button>
+                <button onclick="submitLeave()" class="btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Submit Request
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== CANCEL MODAL ========== -->
+<div id="cancelModal" class="modal">
+    <div class="modal-box" style="max-width:400px;">
+        <div class="modal-header">
+            <div><h3><i class="fas fa-times-circle" style="margin-right:8px;"></i>Cancel Leave Request</h3></div>
+            <button class="modal-close" onclick="closeModal('cancelModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="cancelBody" style="margin-bottom:16px;"></div>
+            <div class="form-group">
+                <label>Reason for cancellation</label>
+                <textarea id="cancelReason" rows="2" placeholder="Optional..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeModal('cancelModal')" class="btn-outline">Keep Request</button>
+            <button onclick="confirmCancel()" id="cancelConfirmBtn"
+                style="background:#dc2626;color:white;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;">
+                <i class="fas fa-trash"></i> Yes, Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== VIEW DETAIL MODAL ========== -->
+<div id="viewModal" class="modal">
+    <div class="modal-box" style="max-width:480px;">
+        <div class="modal-header">
+            <div><h3><i class="fas fa-eye" style="margin-right:8px;"></i>Leave Application Detail</h3></div>
+            <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="viewBody"></div>
+        <div class="modal-footer" style="justify-content:flex-end;">
+            <button onclick="closeModal('viewModal')" class="btn-primary">Close</button>
+        </div>
+    </div>
+</div>
+
+<script src="../auth.js"></script>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const BASE_URL = 'http://localhost:8086/api';
+
+// Employee info from localStorage (set during login)
+const LOGGED_EMP_ID   = localStorage.getItem('hrms_employee_id')       || sessionStorage.getItem('employeeId')      || '';
+const EMPLOYEE_FNAME  = localStorage.getItem('hrms_first_name')        || '';
+const EMPLOYEE_LNAME  = localStorage.getItem('hrms_last_name')         || '';
+const EMPLOYEE_NAME   = (EMPLOYEE_FNAME + ' ' + EMPLOYEE_LNAME).trim() || sessionStorage.getItem('employeeName')    || '';
+const EMPLOYEE_DEPT   = localStorage.getItem('hrms_designation')        || sessionStorage.getItem('designation')      || '';
+const EMPLOYEE_TYPE   = localStorage.getItem('hrms_employment_type')   || sessionStorage.getItem('employmentType')  || '';
+
+// ============================================================
+//  STATE  — NO FALLBACK / MOCK DATA
+// ============================================================
+let CURRENT_EMP  = {};
+let leaveTypes   = [];   // string[] — only from DB
+let balanceData  = {};   // only from DB
+let myLeaves     = [];   // only from DB
+let cancelTargetId = null;
+const YEAR = String(new Date().getFullYear());
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let miniChart = null;
+
+// ============================================================
+//  API UTILITY
+// ============================================================
+async function apiFetch(url, options = {}) {
+    const res = await fetch(url, {
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options
+    });
+    if (!res.ok) {
+        const err = await res.text();
+        throw new Error(`HTTP ${res.status}: ${err.substring(0, 120)}`);
+    }
+    return res.json();
+}
+
+function showToast(msg, type = 'success') {
+    const icons = { success: 'check-circle', error: 'times-circle', info: 'info-circle' };
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+}
+
+function formatDate(d) {
+    if (!d) return '—';
+    const dt = new Date(d);
+    if (isNaN(dt)) return d;
+    return dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function openModal(id)  { document.getElementById(id).classList.add('active'); }
+
+function emptyState(icon, msg, sub = '') {
+    return `<div class="empty-state">
+        <i class="fas fa-${icon}"></i>
+        <p>${msg}</p>
+        ${sub ? `<small>${sub}</small>` : ''}
+    </div>`;
+}
+
+// ============================================================
+//  1. LOAD EMPLOYEE PROFILE  (from localStorage — set at login)
+// ============================================================
+function loadEmployeeProfile() {
+    CURRENT_EMP = {
+        id:      LOGGED_EMP_ID,
+        name:    EMPLOYEE_NAME,
+        dept:    EMPLOYEE_DEPT,
+        empType: EMPLOYEE_TYPE
+    };
+
+    const initials = CURRENT_EMP.name
+        .split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || '--';
+
+    document.getElementById('userAvatar').textContent = initials;
+    document.getElementById('userName').textContent   = CURRENT_EMP.name || 'Employee';
+    document.getElementById('userRole').textContent   = CURRENT_EMP.dept  || '';
+}
+
+// ============================================================
+//  2. LOAD LEAVE TYPES  — NO FALLBACK
+// ============================================================
+async function loadLeaveTypes() {
+    try {
+        const data = await apiFetch(`${BASE_URL}/leave/types`);
+        leaveTypes = Array.isArray(data)
+            ? data.filter(t => t.isActive).map(t => t.name)
+            : [];
+
+        // Populate dropdowns
+        const filterType = document.getElementById('filterType');
+        if (filterType) {
+            filterType.innerHTML = '<option value="all">All Types</option>' +
+                leaveTypes.map(lt => `<option value="${lt}">${lt}</option>`).join('');
+        }
+        const apType = document.getElementById('ap-type');
+        if (apType) {
+            apType.innerHTML = '<option value="">Select leave type</option>' +
+                leaveTypes.map(lt => `<option value="${lt}">${lt}</option>`).join('');
+        }
+    } catch (err) {
+        console.error('Leave types load failed:', err);
+        leaveTypes = [];
+        // dropdowns remain empty — no fake data
+    }
+}
+
+// ============================================================
+//  3. LOAD BALANCE  — NO FALLBACK
+// ============================================================
+async function loadBalance() {
+    if (!CURRENT_EMP.id) { balanceData = {}; return; }
+    try {
+        const data = await apiFetch(`${BASE_URL}/leave/balance?empId=${CURRENT_EMP.id}&year=${YEAR}`);
+        balanceData = data || {};
+    } catch (err) {
+        console.error('Balance load failed:', err);
+        balanceData = {};   // ✅ empty — kuch fake nahi
+        showToast('⚠️ Could not load balance. Contact HR.', 'error');
+    }
+}
+
+// ============================================================
+//  4. LOAD MY LEAVES  — NO FALLBACK
+// ============================================================
+async function loadMyLeaves() {
+    if (!CURRENT_EMP.id) { myLeaves = []; return; }
+    try {
+        const data = await apiFetch(`${BASE_URL}/leave/requests/employee/${CURRENT_EMP.id}`);
+        myLeaves = Array.isArray(data) ? data : [];
+    } catch (err) {
+        console.error('My leaves load failed:', err);
+        myLeaves = [];   // ✅ empty — kuch fake nahi
+        showToast('⚠️ Could not load leave applications.', 'error');
+    }
+}
+
+// ============================================================
+//  5. UPDATE STATS  — shows — when no data
+// ============================================================
+function updateStats() {
+    const hasBalance = balanceData && balanceData.totalAllotted != null;
+
+    document.getElementById('statTotal').textContent     = hasBalance ? balanceData.totalAllotted  : '—';
+    document.getElementById('statUsed').textContent      = hasBalance ? balanceData.totalUsed      : '—';
+    document.getElementById('statRemaining').textContent = hasBalance ? balanceData.totalRemaining : '—';
+    document.getElementById('statPending').textContent   = myLeaves.filter(r => r.status === 'pending').length || 0;
+
+    const pending = myLeaves.filter(r => r.status === 'pending').length;
+    const badge   = document.getElementById('notifBadge');
+    if (pending > 0) { badge.style.display = 'flex'; badge.textContent = pending; }
+    else               badge.style.display = 'none';
+}
+
+// ============================================================
+//  6. SUBMIT LEAVE
+// ============================================================
+async function submitLeave() {
+    const leaveType   = document.getElementById('ap-type').value;
+    const days        = parseInt(document.getElementById('ap-days').value) || 0;
+    const fromDate    = document.getElementById('ap-from').value;
+    const toDate      = document.getElementById('ap-to').value;
+    const reason      = document.getElementById('ap-reason').value.trim();
+    const description = document.getElementById('ap-desc').value.trim();
+
+    if (!leaveType)   { showToast('Please select Leave Type!', 'error');         return; }
+    if (!fromDate)    { showToast('Please select From Date!', 'error');          return; }
+    if (!toDate)      { showToast('Please select To Date!', 'error');            return; }
+    if (days < 1)     { showToast('Number of days must be at least 1!', 'error');return; }
+    if (!reason)      { showToast('Please enter a Reason!', 'error');            return; }
+
+    const payload = {
+        empId:       CURRENT_EMP.id,
+        empName:     CURRENT_EMP.name,
+        department:  CURRENT_EMP.dept,
+        empType:     CURRENT_EMP.empType,
+        leaveType,
+        fromDate,
+        toDate,
+        numberOfDays: days,
+        reason,
+        description,
+        status: 'pending'
+    };
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+    try {
+        const saved = await apiFetch(`${BASE_URL}/leave/requests`, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+        myLeaves.unshift(saved);
+        await loadBalance();
+        updateStats();
+        closeModal('applyModal');
+        showToast('✅ Leave request submitted! Awaiting HR approval.', 'success');
+        renderApplications();
+        renderOverview();
+        renderCalendar();
+    } catch (err) {
+        showToast('❌ ' + (err.message || 'Submission failed.'), 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Request';
+    }
+}
+
+// ============================================================
+//  7. CANCEL LEAVE
+// ============================================================
+async function confirmCancel() {
+    const request = myLeaves.find(x => x.id === cancelTargetId);
+    if (!request) return;
+
+    const btn = document.getElementById('cancelConfirmBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Cancelling...';
+
+    try {
+        await apiFetch(`${BASE_URL}/leave/requests/${request.id}/action`, {
+            method: 'POST',
+            body: JSON.stringify({
+                action:   'reject',
+                remarks:  document.getElementById('cancelReason').value || 'Cancelled by employee',
+                actionBy: CURRENT_EMP.name
+            })
+        });
+        await loadMyLeaves();
+        await loadBalance();
+        updateStats();
+        closeModal('cancelModal');
+        renderApplications();
+        renderOverview();
+        renderCalendar();
+        showToast('Leave request cancelled.', 'info');
+    } catch (err) {
+        showToast('❌ ' + (err.message || 'Cancel failed.'), 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-trash"></i> Yes, Cancel';
+    }
+}
+
+// ============================================================
+//  8. OPEN APPLY MODAL
+// ============================================================
+function openApplyModal() {
+    document.getElementById('ap-empId').value   = CURRENT_EMP.id;
+    document.getElementById('ap-empName').value  = CURRENT_EMP.name;
+    document.getElementById('ap-dept').value     = CURRENT_EMP.dept;
+    document.getElementById('ap-empType').value  = CURRENT_EMP.empType;
+
+    const initials = CURRENT_EMP.name.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0,2).toUpperCase() || '--';
+    document.getElementById('ap-avatar').textContent   = initials;
+    document.getElementById('ap-dispName').textContent = CURRENT_EMP.name;
+    document.getElementById('ap-dispMeta').textContent = `${CURRENT_EMP.id} · ${CURRENT_EMP.dept} · ${CURRENT_EMP.empType}`;
+    document.getElementById('ap-dispType').textContent = CURRENT_EMP.empType;
+
+    apResetForm();
+    openModal('applyModal');
+}
+
+// ============================================================
+//  9. FORM HELPERS
+// ============================================================
+function apResetForm() {
+    ['ap-type','ap-mode','ap-from','ap-to','ap-reason','ap-desc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+    });
+    document.getElementById('ap-days').value = '';
+    const panel = document.getElementById('ap-balPanel');
+    if (panel) panel.style.display = 'none';
+    const chip = document.getElementById('ap-dayChip');
+    if (chip) chip.style.display = 'none';
+}
+
+function apCalcDays() {
+    const from = document.getElementById('ap-from').value;
+    const to   = document.getElementById('ap-to').value;
+    const chip = document.getElementById('ap-dayChip');
+    if (!from || !to) { if (chip) chip.style.display = 'none'; return; }
+
+    const fd = new Date(from + 'T00:00:00');
+    const td = new Date(to   + 'T00:00:00');
+    if (td < fd) { showToast('To Date cannot be before From Date!', 'error'); return; }
+
+    let count = 0;
+    const cur = new Date(fd);
+    while (cur <= td) {
+        const d = cur.getDay();
+        if (d !== 0 && d !== 6) count++;
+        cur.setDate(cur.getDate() + 1);
+    }
+
+    document.getElementById('ap-days').value = count;
+    if (chip) {
+        document.getElementById('ap-dayText').textContent = `${count} working day${count !== 1 ? 's' : ''}`;
+        chip.style.display = 'flex';
+    }
+    apCheckBalance();
+}
+
+function apCheckBalance() {
+    const leaveType = document.getElementById('ap-type').value;
+    const days      = parseInt(document.getElementById('ap-days').value) || 0;
+    const panel     = document.getElementById('ap-balPanel');
+    if (!panel) return;
+
+    if (!leaveType || !balanceData.balances) { panel.style.display = 'none'; return; }
+
+    const bal = balanceData.balances[leaveType];
+    if (!bal) { panel.style.display = 'none'; return; }
+
+    const ok = days === 0 || bal.remaining >= days;
+    panel.style.display = 'block';
+    panel.className = `balance-panel ${ok ? 'ok' : 'warn'}`;
+    panel.innerHTML = `<i class="fas fa-${ok ? 'info-circle' : 'exclamation-triangle'}" style="margin-right:5px;"></i>
+        <strong>${leaveType}:</strong> ${bal.remaining} day(s) remaining · ${bal.used} used of ${bal.allot} allotted
+        ${!ok && days > 0 ? `<br><i class="fas fa-exclamation-triangle" style="margin-right:3px;"></i>Requested ${days} day(s) exceeds your balance of ${bal.remaining}.` : ''}`;
+}
+
+// ============================================================
+//  10. RENDER — OVERVIEW
+// ============================================================
+function renderOverview() {
+    renderQuickBalanceCards();
+    renderRecentList();
+    renderPolicyInfo();
+    renderMiniDonut();
+}
+
+function renderQuickBalanceCards() {
+    const container = document.getElementById('quickBalanceCards');
+    if (!container) return;
+
+    const balances = balanceData.balances || {};
+    const hasData  = leaveTypes.length > 0 && Object.keys(balances).length > 0;
+
+    // ✅ Agar koi data nahi toh empty state — koi fake card nahi
+    if (!hasData) {
+        container.innerHTML = `<div style="grid-column:1/-1;">
+            ${emptyState('info-circle', 'No leave balance data available.', 'Please contact HR to configure your leave policy.')}
+        </div>`;
+        return;
+    }
+
+    const colors = ['#1f6f7f','#16a34a','#1254a4','#ea580c'];
+    container.innerHTML = leaveTypes.map((type, i) => {
+        const bal = balances[type] || { allot: 0, used: 0, remaining: 0 };
+        const pct = bal.allot ? Math.round((bal.used / bal.allot) * 100) : 0;
+        const fc  = pct > 70 ? '#dc2626' : pct > 40 ? '#ea580c' : '#16a34a';
+        return `<div class="balance-card">
+            <div class="balance-label">${type}</div>
+            <div class="balance-num" style="color:${colors[i % colors.length]};">${bal.remaining}</div>
+            <div class="balance-bar"><div class="balance-fill" style="width:${pct}%;background:${fc};"></div></div>
+            <div class="balance-sub">${bal.used} used of ${bal.allot} allotted</div>
+        </div>`;
+    }).join('');
+}
+
+function renderRecentList() {
+    const container = document.getElementById('recentList');
+    if (!container) return;
+
+    const recent = [...myLeaves]
+        .sort((a, b) => (b.addedOn || '').localeCompare(a.addedOn || ''))
+        .slice(0, 5);
+
+    if (!recent.length) {
+        container.innerHTML = `<p style="text-align:center;padding:24px;color:#64748b;font-size:13px;">
+            No applications yet.
+            <button onclick="openApplyModal()" style="background:none;border:none;color:#1f6f7f;cursor:pointer;font-weight:600;">Apply now</button>
+        </p>`;
+        return;
+    }
+
+    const icons = { approved:'✅', rejected:'❌', pending:'⏳' };
+    container.innerHTML = recent.map(r => `
+        <div class="recent-item" onclick="viewDetail(${r.id})">
+            <div>
+                <div class="recent-item-title">${r.leaveType} ${icons[r.status] || ''}</div>
+                <div class="recent-item-sub">${formatDate(r.fromDate)} · ${r.numberOfDays} day(s)</div>
+            </div>
+            <span class="pill ${r.status}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</span>
+        </div>`).join('');
+}
+
+function renderPolicyInfo() {
+    const container = document.getElementById('policyInfo');
+    if (!container) return;
+
+    const balances = balanceData.balances || {};
+    if (!leaveTypes.length) {
+        container.innerHTML = '<p style="font-size:12px;color:#64748b;">No policy configured.</p>';
+        return;
+    }
+    container.innerHTML = leaveTypes.map(type => {
+        const bal = balances[type];
+        return `<div class="policy-row"><span>${type}</span><strong>${bal ? bal.allot + ' days/yr' : '—'}</strong></div>`;
+    }).join('');
+}
+
+function renderMiniDonut() {
+    const ctx = document.getElementById('miniDonut');
+    if (!ctx) return;
+    if (miniChart) { miniChart.destroy(); miniChart = null; }
+
+    const balances = balanceData.balances || {};
+    const hasData  = leaveTypes.length > 0 && Object.keys(balances).length > 0;
+    if (!hasData) return;
+
+    const colors = ['#1f6f7f','#16a34a','#1254a4','#ea580c'];
+    const used   = leaveTypes.map(t => balances[t]?.used || 0);
+    const total  = used.reduce((a, b) => a + b, 0);
+    if (!total) return;  // sabka used 0 ho toh chart mat banao
+
+    miniChart = new Chart(ctx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+            labels: leaveTypes,
+            datasets: [{
+                data: used,
+                backgroundColor: colors.slice(0, leaveTypes.length),
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '65%',
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 10, padding: 8 } },
+                tooltip: { backgroundColor: '#1f6f7f', callbacks: { label: c => `${c.label}: ${c.raw} days used` } }
+            }
+        }
+    });
+}
+
+// ============================================================
+//  11. RENDER — MY APPLICATIONS
+// ============================================================
+function renderApplications() {
+    const statusFilter = document.getElementById('filterStatus').value;
+    const typeFilter   = document.getElementById('filterType').value;
+
+    let filtered = [...myLeaves];
+    if (statusFilter !== 'all') filtered = filtered.filter(r => r.status === statusFilter);
+    if (typeFilter   !== 'all') filtered = filtered.filter(r => r.leaveType === typeFilter);
+    filtered.sort((a, b) => (b.addedOn || '').localeCompare(a.addedOn || ''));
+
+    const tbody    = document.getElementById('appTableBody');
+    const emptyDiv = document.getElementById('appEmpty');
+
+    if (!filtered.length) {
+        tbody.innerHTML = '';
+        if (emptyDiv) emptyDiv.style.display = 'block';
+        return;
+    }
+    if (emptyDiv) emptyDiv.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(r => `
+        <tr onclick="viewDetail(${r.id})">
+            <td style="color:#1f6f7f;font-weight:600;">${r.leaveType}</td>
+            <td>${formatDate(r.fromDate)}</td>
+            <td>${r.toDate ? formatDate(r.toDate) : '—'}</td>
+            <td>${r.numberOfDays}</td>
+            <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;" title="${r.reason || ''}">${r.reason || '—'}</td>
+            <td>${formatDate(r.addedOn)}</td>
+            <td><span class="pill ${r.status}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</span></td>
+            <td>${r.remarks || (r.status === 'pending' ? 'Awaiting review' : '—')}</td>
+            <td onclick="event.stopPropagation()">
+                ${r.status === 'pending'
+                    ? `<button onclick="openCancelModal(${r.id})" style="background:#dc2626;color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;"><i class="fas fa-times"></i> Cancel</button>`
+                    : `<button onclick="viewDetail(${r.id})" style="background:none;border:1px solid #1f6f7f;color:#1f6f7f;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;"><i class="fas fa-eye"></i> View</button>`}
+            </td>
+        </tr>`).join('');
+}
+
+function openCancelModal(id) {
+    cancelTargetId = id;
+    const r = myLeaves.find(x => x.id === id);
+    if (!r) return;
+    document.getElementById('cancelBody').innerHTML = `
+        <div style="background:rgba(185,28,28,0.1);border:1px solid rgba(185,28,28,0.2);border-radius:8px;padding:14px;">
+            <div style="font-size:13px;font-weight:700;color:#1f6f7f;">${r.leaveType}</div>
+            <div style="font-size:12px;color:#64748b;margin-top:4px;">${formatDate(r.fromDate)} · ${r.numberOfDays} day(s)</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">Reason: ${r.reason}</div>
+        </div>`;
+    document.getElementById('cancelReason').value = '';
+    openModal('cancelModal');
+}
+
+function viewDetail(id) {
+    const r = myLeaves.find(x => x.id === id);
+    if (!r) return;
+
+    const sColors = { approved:'#16a34a', rejected:'#dc2626', pending:'#eab308' };
+    const sBg     = { approved:'rgba(22,163,74,0.1)', rejected:'rgba(220,38,38,0.1)', pending:'rgba(234,179,8,0.1)' };
+    const sMsg    = { approved:'Your leave has been approved ✅', rejected:'Your request was declined ❌', pending:'Your request is under review ⏳' };
+
+    document.getElementById('viewBody').innerHTML = `
+        <div style="background:${sBg[r.status]};border-radius:10px;padding:16px;margin-bottom:16px;text-align:center;">
+            <div style="font-size:20px;font-weight:800;color:${sColors[r.status]};">${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</div>
+            <div style="font-size:12px;color:#64748b;margin-top:4px;">${sMsg[r.status] || ''}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            ${[
+                ['Leave Type',      r.leaveType],
+                ['From Date',       formatDate(r.fromDate)],
+                ['To Date',         r.toDate ? formatDate(r.toDate) : '—'],
+                ['Number of Days',  r.numberOfDays],
+                ['Applied On',      formatDate(r.addedOn)],
+                ['Approved By',     r.actionBy || '—']
+            ].map(([k,v]) => `
+                <div style="background:#f8fafc;border-radius:8px;padding:10px;">
+                    <div style="font-size:10px;color:#64748b;font-weight:600;">${k}</div>
+                    <div style="font-size:13px;color:#1f6f7f;font-weight:600;">${v}</div>
+                </div>`).join('')}
+        </div>
+        <div style="margin-top:10px;background:#f8fafc;border-radius:8px;padding:10px;">
+            <div style="font-size:10px;color:#64748b;font-weight:600;margin-bottom:4px;">Reason</div>
+            <div style="font-size:13px;color:#1f6f7f;">${r.reason || '—'}</div>
+        </div>
+        ${r.description ? `
+        <div style="margin-top:10px;background:#f8fafc;border-radius:8px;padding:10px;">
+            <div style="font-size:10px;color:#64748b;font-weight:600;margin-bottom:4px;">Notes</div>
+            <div style="font-size:13px;color:#1f6f7f;">${r.description}</div>
+        </div>` : ''}
+        ${r.remarks ? `
+        <div style="margin-top:10px;background:rgba(31,111,127,0.05);border:1px dashed rgba(31,111,127,0.2);border-radius:8px;padding:10px;">
+            <div style="font-size:10px;color:#64748b;font-weight:600;margin-bottom:4px;">HR Remarks</div>
+            <div style="font-size:13px;color:#1f6f7f;">${r.remarks}</div>
+        </div>` : ''}`;
+    openModal('viewModal');
+}
+
+// ============================================================
+//  12. RENDER — BALANCE TAB
+// ============================================================
+function renderBalance() {
+    renderBalanceCards();
+    renderBalanceDetailTable();
+}
+
+function renderBalanceCards() {
+    const container = document.getElementById('balanceCards');
+    if (!container) return;
+
+    const balances = balanceData.balances || {};
+    const hasData  = leaveTypes.length > 0 && Object.keys(balances).length > 0;
+
+    if (!hasData) {
+        container.innerHTML = `<div style="grid-column:1/-1;">
+            ${emptyState('info-circle', 'No balance data available.', 'Contact HR to set up your leave policy.')}
+        </div>`;
+        return;
+    }
+
+    const colors = ['#1f6f7f','#16a34a','#1254a4','#ea580c'];
+    container.innerHTML = leaveTypes.map((type, i) => {
+        const bal = balances[type] || { allot:0, used:0, remaining:0 };
+        const pct = bal.allot ? Math.round((bal.used / bal.allot) * 100) : 0;
+        const fc  = pct > 70 ? '#dc2626' : pct > 40 ? '#ea580c' : '#16a34a';
+        return `<div class="card" style="border-top:3px solid ${colors[i % colors.length]};">
+            <div style="font-size:12px;font-weight:600;color:#64748b;margin-bottom:12px;">${type}</div>
+            <div style="display:flex;gap:10px;margin-bottom:10px;">
+                ${[['Allotted', bal.allot, colors[i % colors.length]], ['Used', bal.used, '#dc2626'], ['Left', bal.remaining, '#16a34a']].map(([l,v,c]) =>
+                    `<div style="flex:1;background:#f8fafc;border-radius:8px;padding:10px;text-align:center;">
+                        <div style="font-family:Poppins,sans-serif;font-size:22px;font-weight:800;color:${c};">${v}</div>
+                        <div style="font-size:10px;color:#64748b;">${l}</div>
+                    </div>`).join('')}
+            </div>
+            <div class="balance-bar"><div class="balance-fill" style="width:${pct}%;background:${fc};"></div></div>
+            <div style="font-size:10px;color:#64748b;margin-top:4px;">${pct}% used</div>
+        </div>`;
+    }).join('');
+}
+
+function renderBalanceDetailTable() {
+    const container = document.getElementById('balanceDetailTable');
+    if (!container) return;
+
+    const approved = myLeaves
+        .filter(r => r.status === 'approved')
+        .sort((a, b) => (b.fromDate || '').localeCompare(a.fromDate || ''));
+
+    if (!approved.length) {
+        container.innerHTML = emptyState('calendar-check', 'No approved leaves this year.');
+        return;
+    }
+
+    container.innerHTML = `<table>
+        <thead><tr>
+            <th>Leave Type</th><th>From</th><th>To</th>
+            <th>Days</th><th>Approved By</th><th>Action Date</th>
+        </tr></thead>
+        <tbody>
+            ${approved.map(r => `<tr>
+                <td>${r.leaveType}</td>
+                <td>${formatDate(r.fromDate)}</td>
+                <td>${r.toDate ? formatDate(r.toDate) : '—'}</td>
+                <td>${r.numberOfDays}</td>
+                <td>${r.actionBy || '—'}</td>
+                <td>${formatDate(r.actionDate)}</td>
+            </tr>`).join('')}
+        </tbody>
+    </table>`;
+}
+
+// ============================================================
+//  13. CALENDAR
+// ============================================================
+function renderCalendar() {
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('calTitle').textContent = `${months[calMonth]} ${calYear}`;
+
+    const dateMap = {};
+    myLeaves.forEach(r => {
+        if (!r.fromDate) return;
+        const start = new Date(r.fromDate + 'T00:00:00');
+        for (let i = 0; i < (r.numberOfDays || 1); i++) {
+            const d = new Date(start);
+            d.setDate(d.getDate() + i);
+            if (d.getFullYear() === calYear && d.getMonth() === calMonth)
+                dateMap[d.getDate()] = r.status;
+        }
+    });
+
+    const firstDay    = new Date(calYear, calMonth, 1).getDay();
+    const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+    const today       = new Date();
+    const weekDays    = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    let html = '<div class="cal-grid">';
+    weekDays.forEach(d => { html += `<div class="cal-day-header">${d}</div>`; });
+    for (let i = 0; i < firstDay; i++) html += '<div></div>';
+
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dow       = (d + firstDay - 1) % 7;
+        const isWeekend = dow === 0 || dow === 6;
+        const status    = dateMap[d];
+        const isToday   = d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
+
+        let cls = 'cal-day';
+        if      (status === 'approved') cls += ' approved';
+        else if (status === 'pending')  cls += ' pending';
+        else if (status === 'rejected') cls += ' rejected';
+        else if (isWeekend)             cls += ' weekend';
+        if (isToday) cls += ' today';
+
+        html += `<div class="${cls}" ${status ? `title="${status.charAt(0).toUpperCase()+status.slice(1)} leave"` : ''}>${d}</div>`;
+    }
+    html += '</div>';
+    document.getElementById('calGrid').innerHTML = html;
+}
+
+function changeMonth(delta) {
+    calMonth += delta;
+    if (calMonth < 0)  { calMonth = 11; calYear--; }
+    if (calMonth > 11) { calMonth = 0;  calYear++; }
+    renderCalendar();
+}
+
+// ============================================================
+//  14. TABS
+// ============================================================
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+    });
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+
+    if (tabName === 'myapplications') renderApplications();
+    if (tabName === 'balance')        renderBalance();
+    if (tabName === 'calendar')       renderCalendar();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() { switchTab(this.getAttribute('data-tab')); });
+});
+
+// ============================================================
+//  15. EXPORT
+// ============================================================
+function exportMyLeaves() {
+    if (!myLeaves.length) { showToast('Nothing to export!', 'error'); return; }
+    const headers = ['ID','Leave Type','From Date','To Date','Days','Reason','Status','Applied On','Remarks'];
+    const rows = myLeaves.map(r => [
+        r.id, r.leaveType, r.fromDate, r.toDate || '', r.numberOfDays,
+        `"${(r.reason  || '').replace(/"/g,'""')}"`,
+        r.status, r.addedOn || '',
+        `"${(r.remarks || '').replace(/"/g,'""')}"`
+    ]);
+    const csv  = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `my_leaves_${CURRENT_EMP.id}_${YEAR}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Exported successfully!', 'success');
+}
+
+// ============================================================
+//  16. SIDEBAR & DROPDOWN
+// ============================================================
+document.getElementById('collapseSidebarBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.getElementById('mainContent').classList.toggle('collapsed');
+});
+
+document.getElementById('mobileToggleBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.add('mobile-open');
+    document.getElementById('overlay').classList.add('active');
+});
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    document.getElementById('overlay').classList.remove('active');
+}
+
+document.getElementById('profileDropdownBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('profileDropdown').classList.toggle('open');
+    this.classList.toggle('open');
+});
+
+document.addEventListener('click', () => {
+    document.getElementById('profileDropdown').classList.remove('open');
+    document.getElementById('profileDropdownBtn').classList.remove('open');
+});
+
+// ============================================================
+//  17. INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Employee Leave page initializing...');
+
+    // Stats ko — set karo jab tak load hota hai
+    ['statTotal','statUsed','statRemaining','statPending'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '...';
+    });
+
+    try {
+        loadEmployeeProfile();          // sync — localStorage se
+        await loadLeaveTypes();         // DB se — no fallback
+        await loadBalance();            // DB se — no fallback
+        await loadMyLeaves();           // DB se — no fallback
+
+        updateStats();
+        renderOverview();
+        renderApplications();
+        renderCalendar();
+
+        console.log('Initialization complete.');
+    } catch (err) {
+        console.error('Init failed:', err);
+        showToast('⚠️ ' + err.message, 'error');
+    }
+});
+</script>
+</body>
+</html>

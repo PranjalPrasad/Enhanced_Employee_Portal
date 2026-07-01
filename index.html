@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<title>Login | SIEC</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  /* ── RESET & BASE ─────────────────────────────────────── */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #a8e6e3 0%, #e0f2ee 100%);
+    overflow: auto;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(31, 111, 127, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(31, 111, 127, 0.06) 1px, transparent 1px);
+    background-size: 45px 45px;
+    opacity: .7;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LOGIN CARD ───────────────────────────────────────── */
+  /* REPLACE */
+.main-wrapper {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1080px;
+    height: auto;
+    max-height: calc(100vh - 3rem);
+    background: white;
+    border-radius: 28px;
+    overflow: hidden;
+    display: flex;
+    border: 1px solid #1F6F7F;
+  }
+
+  /* Left Side */
+  /* REPLACE */
+.illustration-side {
+    flex: 1.05;
+    background: #d5efef;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .illustration-top {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 2px 24px 0;
+  }
+
+  .illustration-top img.side-logo {
+    height: 90px;
+    width: 100px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .illustration-address {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    color: #1F6F7F;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+
+ /* REPLACE */
+.illustration-side img.main-illustration {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    object-fit: cover;
+    object-position: center top;
+    filter: drop-shadow(0 20px 30px rgba(31, 111, 127, .15));
+    margin-top: -10px;
+  }
+
+  /* Right Side */
+  /* REPLACE */
+.form-side {
+    flex: 1;
+    background: white;
+    padding: 2.4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .header-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 1.6rem;
+  }
+
+  .form-side h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #1F6F7F;
+    margin: 0 0 6px;
+  }
+
+  /* ── MOTIVATIONAL TAGLINE ─────────────────────────────── */
+  .motivational-tagline {
+    background: linear-gradient(135deg, #E6F4F6 0%, #d5efef 100%);
+    border-left: 3px solid #1F6F7F;
+    border-radius: 0 10px 10px 0;
+    padding: 9px 12px;
+    margin-bottom: 1.4rem;
+  }
+
+  .motivational-tagline .tag-greeting {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #5FAFC2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .motivational-tagline .tag-text {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #1F6F7F;
+    line-height: 1.55;
+  }
+
+  .motivational-tagline .tag-text strong {
+    color: #145c6b;
+    font-weight: 700;
+  }
+
+  .input-group { margin-bottom: 1rem; }
+
+  .input-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.78rem;
+    margin-bottom: 8px;
+    color: #334155;
+  }
+
+  .input-group label i { color: #5FAFC2; }
+
+  .input-field { position: relative; }
+
+  .input-field i.field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8;
+    font-size: 0.95rem;
+  }
+
+  .input-field input {
+    width: 100%;
+    padding: 0.85rem 1rem 0.85rem 3rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: 1.5px solid #b2caea;
+    border-radius: 11px;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .input-field input:focus {
+    border-color: #1F6F7F;
+    box-shadow: 0 0 0 3px rgba(31, 111, 127, 0.08);
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #03919e;
+    cursor: pointer;
+  }
+
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(105deg, #1F6F7F 0%, #5FAFC2 100%);
+    border: none;
+    padding: 0.8rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 5px 14px rgba(31, 111, 127, 0.25);
+    transition: all 0.2s;
+  }
+
+  .login-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(31, 111, 127, 0.3);
+  }
+
+  .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+  .forgot-link {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 1.2rem;
+  }
+
+  .forgot-link a {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #1F6F7F;
+    background: #E6F4F6;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .forgot-link a:hover {
+    background: #d4eef2;
+    color: #145c6b;
+    transform: translateY(-1px);
+  }
+
+  .terms {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #64748B;
+    padding-top: 1rem;
+  }
+
+  .terms a { color: #5FAFC2; text-decoration: none; }
+
+  @media (max-width: 900px) {
+    .illustration-side { display: none; }
+    .form-side { padding: 1.4rem 1.2rem; }
+    .form-side h1 { font-size: 1.4rem; }
+  }
+
+  @media (max-width: 600px) {
+    .main-wrapper { height: auto; }
+    .form-side { padding: 1.2rem 1rem; }
+    .login-btn { font-size: 0.9rem; padding: 0.75rem; }
+    .input-field input { font-size: 0.88rem; }
+  }
+
+  /* ── TOAST ────────────────────────────────────────────── */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all .3s;
+    pointer-events: none;
+    max-width: 340px;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error   { background: #E56C6C; }
+  .toast.success { background: #6FAF2E; }
+  .toast.warning { background: #F59E0B; }
+
+  /* ════════════════════════════════════════════════════════
+     FORGOT PASSWORD OVERLAY
+  ════════════════════════════════════════════════════════ */
+  .fp-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(15, 40, 50, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .fp-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .fp-modal {
+    background: #fff;
+    border-radius: 22px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 24px 60px rgba(15, 40, 50, 0.22);
+    border: 1px solid rgba(31, 111, 127, 0.15);
+    overflow: hidden;
+    transform: translateY(18px) scale(0.97);
+    transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .fp-overlay.active .fp-modal {
+    transform: translateY(0) scale(1);
+  }
+
+  /* Modal Header */
+  .fp-header {
+    background: linear-gradient(105deg, #1F6F7F 0%, #5FAFC2 100%);
+    padding: 1.4rem 1.6rem 1.2rem;
+    position: relative;
+  }
+
+  .fp-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .fp-header-icon {
+    width: 42px;
+    height: 42px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .fp-close-btn {
+    background: rgba(255,255,255,0.18);
+    border: none;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .fp-close-btn:hover { background: rgba(255,255,255,0.28); }
+
+  .fp-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 10px 0 2px;
+  }
+
+  .fp-header p {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.45;
+  }
+
+  /* Breadcrumb Steps */
+  .fp-steps {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.6rem 0;
+    gap: 0;
+  }
+
+  .fp-step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex: 1;
+    position: relative;
+  }
+
+  /* Connector line between steps */
+  .fp-step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: calc(50% + 15px);
+    right: calc(-50% + 15px);
+    height: 2px;
+    background: #e2eaf0;
+    transition: background 0.4s;
+    z-index: 0;
+  }
+
+  .fp-step-item.completed:not(:last-child)::after {
+    background: #1F6F7F;
+  }
+
+  .fp-step-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #94a3b8;
+    transition: all 0.35s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .fp-step-item.active .fp-step-dot {
+    border-color: #1F6F7F;
+    background: #1F6F7F;
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(31, 111, 127, 0.15);
+  }
+
+  .fp-step-item.completed .fp-step-dot {
+    border-color: #1F6F7F;
+    background: #1F6F7F;
+    color: #fff;
+  }
+
+  .fp-step-label {
+    font-size: 0.64rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-align: center;
+    white-space: nowrap;
+    transition: color 0.3s;
+  }
+
+  .fp-step-item.active .fp-step-label,
+  .fp-step-item.completed .fp-step-label {
+    color: #1F6F7F;
+  }
+
+  /* Modal Body */
+  .fp-body {
+    padding: 1.2rem 1.6rem 1.4rem;
+    height: 320px;
+    overflow: auto;
+  }
+
+  /* Step panels */
+  .fp-panel {
+    display: none;
+    animation: fp-fade-in 0.3s ease;
+  }
+
+  .fp-panel.active { display: block; }
+
+  @keyframes fp-fade-in {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .fp-panel-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1e3a44;
+    margin-bottom: 4px;
+  }
+
+  .fp-panel-sub {
+    font-size: 0.74rem;
+    color: #64748b;
+    margin-bottom: 1.1rem;
+    line-height: 1.5;
+  }
+
+  .fp-panel-sub strong { color: #1F6F7F; }
+
+  /* Email badge (shown in step 2 & 3) */
+  .fp-email-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #E6F4F6;
+    border: 1px solid #b2dfe7;
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin-bottom: 1rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: #1F6F7F;
+  }
+
+  .fp-email-badge i { font-size: 0.8rem; color: #5FAFC2; }
+
+  /* Input fields inside modal */
+  .fp-input-group { margin-bottom: 0.9rem; }
+
+  .fp-input-group label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #334155;
+    margin-bottom: 7px;
+  }
+
+  .fp-input-group label i { color: #5FAFC2; font-size: 0.8rem; }
+
+  .fp-input-wrap { position: relative; }
+
+  .fp-input-wrap i.fi-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+
+  .fp-input-wrap input {
+    width: 100%;
+    padding: 0.78rem 1rem 0.78rem 2.7rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1.5px solid #b2caea;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    color: #1e3a44;
+  }
+
+  .fp-input-wrap input:focus {
+    border-color: #1F6F7F;
+    box-shadow: 0 0 0 3px rgba(31, 111, 127, 0.09);
+  }
+
+  .fp-input-wrap input.error-field {
+    border-color: #E56C6C;
+    box-shadow: 0 0 0 3px rgba(229, 108, 108, 0.1);
+  }
+
+  .fp-pwd-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+    color: #03919e;
+    cursor: pointer;
+    padding: 2px;
+  }
+
+  /* OTP input row */
+  .otp-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 0.6rem;
+  }
+
+  .otp-cell {
+    width: 44px;
+    height: 52px;
+    border: 2px solid #b2caea;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1F6F7F;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: all 0.2s;
+    background: #fff;
+    -moz-appearance: textfield;
+  }
+
+  .otp-cell::-webkit-outer-spin-button,
+  .otp-cell::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .otp-cell:focus {
+    border-color: #1F6F7F;
+    box-shadow: 0 0 0 3px rgba(31, 111, 127, 0.12);
+    background: #f0f9fb;
+  }
+
+  .otp-cell.filled {
+    border-color: #1F6F7F;
+    background: #E6F4F6;
+  }
+
+  .otp-cell.error-cell {
+    border-color: #E56C6C;
+    background: #fff5f5;
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%,60%  { transform: translateX(-4px); }
+    40%,80%  { transform: translateX(4px); }
+  }
+
+  /* OTP Timer */
+  .otp-timer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .otp-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.74rem;
+    font-weight: 600;
+  }
+
+  .otp-timer.ticking { color: #1F6F7F; }
+  .otp-timer.expired { color: #E56C6C; }
+
+  .timer-ring {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .timer-ring svg {
+    width: 20px;
+    height: 20px;
+    transform: rotate(-90deg);
+  }
+
+  .timer-ring .ring-bg {
+    fill: none;
+    stroke: #e2eaf0;
+    stroke-width: 2.5;
+  }
+
+  .timer-ring .ring-fill {
+    fill: none;
+    stroke: #1F6F7F;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 50.27;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear, stroke 0.3s;
+  }
+
+  .timer-ring.expired-ring .ring-fill { stroke: #E56C6C; }
+
+  .resend-btn {
+    background: none;
+    border: none;
+    font-size: 0.74rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+  }
+
+  .resend-btn:disabled { color: #94a3b8; cursor: not-allowed; }
+  .resend-btn:not(:disabled) { color: #1F6F7F; }
+  .resend-btn:not(:disabled):hover { color: #145c6b; text-decoration: underline; }
+
+  /* Password strength */
+  .pwd-strength-bar {
+    height: 4px;
+    border-radius: 3px;
+    background: #e2eaf0;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+
+  .pwd-strength-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease, background 0.3s;
+    width: 0%;
+  }
+
+  .pwd-strength-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-top: 3px;
+    text-align: right;
+  }
+
+  /* Action button row */
+  .fp-action-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 1rem;
+  }
+
+  .fp-btn {
+    flex: 1;
+    padding: 0.72rem 1rem;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .fp-btn-primary {
+    background: linear-gradient(105deg, #1F6F7F 0%, #5FAFC2 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(31, 111, 127, 0.22);
+  }
+
+  .fp-btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(31, 111, 127, 0.3);
+  }
+
+  .fp-btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+
+  .fp-btn-ghost {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1.5px solid #e2e8f0;
+  }
+
+  .fp-btn-ghost:hover { background: #e8f0f8; color: #1F6F7F; border-color: #b2caea; }
+
+  /* Info notice */
+  .fp-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 9px;
+    padding: 9px 11px;
+    margin-bottom: 0.9rem;
+    font-size: 0.72rem;
+    color: #92400e;
+    line-height: 1.45;
+  }
+
+  .fp-notice i { color: #F59E0B; margin-top: 1px; flex-shrink: 0; }
+
+  /* Success panel */
+  .fp-success-panel {
+    text-align: center;
+    padding: 1rem 0 0.5rem;
+  }
+
+  .fp-success-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d5efef, #E6F4F6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.9rem;
+    font-size: 1.8rem;
+    color: #1F6F7F;
+    animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes pop-in {
+    from { transform: scale(0.3); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+
+  .fp-success-panel h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e3a44;
+    margin-bottom: 6px;
+  }
+
+  .fp-success-panel p {
+    font-size: 0.76rem;
+    color: #64748b;
+    line-height: 1.5;
+  }
+
+  /* Field error hint */
+  .field-hint {
+    font-size: 0.68rem;
+    color: #E56C6C;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .field-hint.visible { display: block; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .fp-modal { border-radius: 16px; }
+    .fp-header { padding: 1.2rem 1.2rem 1rem; }
+    .fp-body { padding: 1rem 1.2rem 1.2rem; }
+    .fp-steps { padding: 0.9rem 1.2rem 0; }
+    .otp-cell { width: 38px; height: 46px; font-size: 1.15rem; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════ LOGIN CARD ════════════════ -->
+<div class="main-wrapper">
+
+  <!-- Left Illustration -->
+  <div class="illustration-side">
+    <div class="illustration-top">
+      <img src="/Images/logo.png" alt="SIEC Logo" class="side-logo">
+      <div class="illustration-address">
+        Address : Office-401, Sanskriti Arcade, Kaspate Wasti, Wakad, Pune - 411057
+      </div>
+    </div>
+    <img src="/Images/login.png" alt="Employee working" class="main-illustration">
+  </div>
+
+  <!-- Right Form -->
+  <div class="form-side">
+    <div class="header-row">
+      <div class="header-text">
+        <h1>Employee Login</h1>
+      </div>
+    </div>
+
+    <!-- Motivational Tagline -->
+    <div class="motivational-tagline">
+      <div class="tag-greeting">
+        <i class="fas fa-leaf"></i> Good to see you today
+      </div>
+      <div class="tag-text">
+        Your work at <strong>SIEC</strong> is helping build a cleaner, greener future.
+        Every effort you put in today creates a more <strong>sustainable world</strong> tomorrow. Let's make it count! 🌿
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label><i class="fas fa-id-card"></i> Employee ID</label>
+      <div class="input-field">
+        <i class="fas fa-user-circle field-icon"></i>
+        <input type="text" id="empId" placeholder="Enter your Employee ID" autocomplete="username" required>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label><i class="fas fa-lock"></i> Password</label>
+      <div class="input-field">
+        <i class="fas fa-key field-icon"></i>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+        <button type="button" class="password-toggle" id="togglePasswordBtn">
+          <i class="far fa-eye-slash" id="toggleIcon"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="forgot-link">
+      <a href="#" id="forgotLink">Forgot password?</a>
+    </div>
+
+    <button class="login-btn" id="loginBtn">
+      <span id="btnText">Sign In</span>
+      <i class="fas fa-arrow-right-to-bracket" id="btnIcon"></i>
+    </button>
+
+    <div class="terms">
+      By signing in, you agree to SIEC's
+      <a href="#">Terms of Services</a> and
+      <a href="#">Privacy Policy</a>.
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ FORGOT PASSWORD OVERLAY ════════════════ -->
+<div class="fp-overlay" id="fpOverlay" role="dialog" aria-modal="true" aria-label="Reset Password">
+  <div class="fp-modal" id="fpModal">
+
+    <!-- Header -->
+    <div class="fp-header">
+      <div class="fp-header-top">
+        <div class="fp-header-icon"><i class="fas fa-shield-halved"></i></div>
+        <button class="fp-close-btn" id="fpCloseBtn" aria-label="Close"><i class="fas fa-xmark"></i></button>
+      </div>
+      <h2>Reset Your Password</h2>
+      <p>Verify your identity securely in 3 quick steps.</p>
+    </div>
+
+    <!-- Step Breadcrumbs -->
+    <div class="fp-steps" id="fpSteps">
+      <div class="fp-step-item active" data-step="1" id="stepItem1">
+        <div class="fp-step-dot" id="stepDot1">1</div>
+        <span class="fp-step-label">Email</span>
+      </div>
+      <div class="fp-step-item" data-step="2" id="stepItem2">
+        <div class="fp-step-dot" id="stepDot2">2</div>
+        <span class="fp-step-label">Verify OTP</span>
+      </div>
+      <div class="fp-step-item" data-step="3" id="stepItem3">
+        <div class="fp-step-dot" id="stepDot3">3</div>
+        <span class="fp-step-label">New Password</span>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="fp-body">
+
+      <!-- ── STEP 1: Email ── -->
+      <div class="fp-panel active" id="fpPanel1">
+        <div class="fp-panel-title">Enter your registered email</div>
+        <div class="fp-panel-sub">We'll send a 6-digit OTP to verify it's really you. The code is valid for <strong>5 minutes</strong>.</div>
+
+        <div class="fp-input-group">
+          <label><i class="fas fa-envelope"></i> Work Email Address</label>
+          <div class="fp-input-wrap">
+            <i class="fas fa-at fi-icon"></i>
+            <input type="email" id="fpEmail" placeholder="your.email@company.com" autocomplete="email" maxlength="100">
+          </div>
+          <div class="field-hint" id="fpEmailHint"></div>
+        </div>
+
+        <div class="fp-notice">
+          <i class="fas fa-circle-info"></i>
+          <span>Use the email address associated with your SIEC employee account. Check with HR if unsure.</span>
+        </div>
+
+        <div class="fp-action-row">
+          <button class="fp-btn fp-btn-ghost" id="fpCancelBtn1">Cancel</button>
+          <button class="fp-btn fp-btn-primary" id="fpSendOtpBtn">
+            <span id="sendOtpBtnText">Send OTP</span>
+            <i class="fas fa-paper-plane" id="sendOtpBtnIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: OTP ── -->
+      <div class="fp-panel" id="fpPanel2">
+        <div class="fp-panel-title">Enter the 6-digit code</div>
+        <div class="fp-panel-sub">A one-time code was sent to your email. Do not share it with anyone.</div>
+
+        <div class="fp-email-badge" id="fpEmailBadge2">
+          <i class="fas fa-envelope-circle-check"></i>
+          <span id="fpEmailDisplay2">—</span>
+        </div>
+
+        <div class="otp-row" id="otpRow">
+          <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" data-idx="0" aria-label="OTP digit 1">
+          <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" data-idx="1" aria-label="OTP digit 2">
+          <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" data-idx="2" aria-label="OTP digit 3">
+          <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" data-idx="3" aria-label="OTP digit 4">
+          <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" data-idx="4" aria-label="OTP digit 5">
+          <input class="otp-cell" type="text" inputmode="numeric" maxlength="1" data-idx="5" aria-label="OTP digit 6">
+        </div>
+
+        <div class="otp-timer-row">
+          <div class="otp-timer ticking" id="otpTimerDisplay">
+            <div class="timer-ring" id="timerRing">
+              <svg viewBox="0 0 20 20">
+                <circle class="ring-bg" cx="10" cy="10" r="8"/>
+                <circle class="ring-fill" id="ringFill" cx="10" cy="10" r="8"/>
+              </svg>
+            </div>
+            <span id="otpTimerText">05:00</span>
+          </div>
+          <button class="resend-btn" id="resendOtpBtn" disabled>Resend code</button>
+        </div>
+
+        <div class="field-hint" id="fpOtpHint"></div>
+
+        <div class="fp-action-row">
+          <button class="fp-btn fp-btn-ghost" id="fpBackBtn2"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="fp-btn fp-btn-primary" id="fpVerifyOtpBtn">
+            <span id="verifyOtpBtnText">Verify Code</span>
+            <i class="fas fa-check-circle" id="verifyOtpBtnIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: New Password ── -->
+      <div class="fp-panel" id="fpPanel3">
+        <div class="fp-panel-title">Set a new password</div>
+        <div class="fp-panel-sub">Choose a strong password. Minimum 8 characters with letters and numbers.</div>
+
+        <div class="fp-email-badge" id="fpEmailBadge3">
+          <i class="fas fa-envelope-circle-check"></i>
+          <span id="fpEmailDisplay3">—</span>
+        </div>
+
+        <div class="fp-input-group">
+          <label><i class="fas fa-lock"></i> New Password</label>
+          <div class="fp-input-wrap">
+            <i class="fas fa-key fi-icon"></i>
+            <input type="password" id="fpNewPwd" placeholder="Enter new password" autocomplete="new-password" maxlength="64">
+            <button type="button" class="fp-pwd-toggle" id="fpNewPwdToggle"><i class="far fa-eye-slash" id="fpNewPwdToggleIcon"></i></button>
+          </div>
+          <div class="pwd-strength-bar"><div class="pwd-strength-fill" id="pwdStrengthFill"></div></div>
+          <div class="pwd-strength-label" id="pwdStrengthLabel" style="color:#94a3b8;">—</div>
+        </div>
+
+        <div class="fp-input-group">
+          <label><i class="fas fa-lock"></i> Confirm Password</label>
+          <div class="fp-input-wrap">
+            <i class="fas fa-key fi-icon"></i>
+            <input type="password" id="fpConfirmPwd" placeholder="Re-enter new password" autocomplete="new-password" maxlength="64">
+            <button type="button" class="fp-pwd-toggle" id="fpConfirmPwdToggle"><i class="far fa-eye-slash" id="fpConfirmPwdToggleIcon"></i></button>
+          </div>
+          <div class="field-hint" id="fpPwdHint"></div>
+        </div>
+
+        <div class="fp-action-row">
+          <button class="fp-btn fp-btn-ghost" id="fpBackBtn3"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="fp-btn fp-btn-primary" id="fpResetPwdBtn">
+            <span id="resetPwdBtnText">Reset Password</span>
+            <i class="fas fa-shield-check" id="resetPwdBtnIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: Success ── -->
+      <div class="fp-panel" id="fpPanel4">
+        <div class="fp-success-panel">
+          <div class="fp-success-circle"><i class="fas fa-circle-check"></i></div>
+          <h3>Password Reset Successful!</h3>
+          <p>Your password has been updated. You can now sign in with your new credentials.</p>
+        </div>
+        <div class="fp-action-row" style="margin-top: 1.4rem;">
+          <button class="fp-btn fp-btn-primary" id="fpGoToLoginBtn" style="flex:none;width:100%;">
+            <i class="fas fa-arrow-right-to-bracket"></i> Back to Sign In
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /fp-body -->
+  </div><!-- /fp-modal -->
+</div><!-- /fp-overlay -->
+
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── CONFIG ─────────────────────────────────────────── */
+  const BASE_URL  = 'http://localhost:8086';
+  const LOGIN_URL = BASE_URL + '/api/employee/auth/login';
+  const DASHBOARD = '/pages/dashboard.html';
+
+  const OTP_SEND_URL     = BASE_URL + '/api/otp/send';
+  const OTP_VALIDATE_URL = BASE_URL + '/api/otp/validate';
+  const OTP_RESET_URL    = BASE_URL + '/api/otp/reset-password';
+
+  const OTP_TTL_SECONDS  = 300; // 5 minutes — must match backend
+
+  /* ── LOGIN ELEMENTS ─────────────────────────────────── */
+  const empIdInput = document.getElementById('empId');
+  const pwdInput   = document.getElementById('password');
+  const toggleBtn  = document.getElementById('togglePasswordBtn');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const loginBtn   = document.getElementById('loginBtn');
+  const btnText    = document.getElementById('btnText');
+  const btnIcon    = document.getElementById('btnIcon');
+  const forgotLink = document.getElementById('forgotLink');
+  const toast      = document.getElementById('toast');
+
+  /* ── CLEAR STALE SESSION ────────────────────────────── */
+  ['hrms_authenticated','hrms_employee_id','hrms_employee_prime_id',
+   'hrms_first_name','hrms_full_name','hrms_designation',
+   'hrms_department','hrms_work_email','hrms_login_ts',
+  ].forEach(k => localStorage.removeItem(k));
+
+  /* ── TOAST ──────────────────────────────────────────── */
+  let toastTimer;
+  function showToast(message, type = 'error') {
+    clearTimeout(toastTimer);
+    const pfx = type === 'success' ? '✓ ' : type === 'warning' ? '⚠ ' : '✕ ';
+    toast.textContent = pfx + message;
+    toast.className = `toast show ${type}`;
+    toastTimer = setTimeout(() => { toast.className = 'toast'; }, 4500);
+  }
+
+  /* ── PASSWORD TOGGLE (login) ────────────────────────── */
+  toggleBtn.addEventListener('click', () => {
+    const is = pwdInput.type === 'password';
+    pwdInput.type = is ? 'text' : 'password';
+    toggleIcon.className = is ? 'far fa-eye' : 'far fa-eye-slash';
+  });
+
+  /* ── LOGIN LOADING STATE ─────────────────────────────── */
+  function setLoginLoading(on) {
+    loginBtn.disabled = on;
+    btnText.textContent = on ? 'Signing in…' : 'Sign In';
+    btnIcon.className = on ? 'fas fa-spinner fa-pulse' : 'fas fa-arrow-right-to-bracket';
+  }
+
+  /* ── STORE SESSION ──────────────────────────────────── */
+  function storeDisplaySession(data) {
+    const fullName = data.fullName ?? '';
+    localStorage.setItem('hrms_authenticated',     'true');
+    localStorage.setItem('hrms_employee_prime_id', String(data.employeePrimeId ?? ''));
+    localStorage.setItem('hrms_employee_id',       data.employeeId ?? '');
+    localStorage.setItem('hrms_full_name',         fullName);
+    localStorage.setItem('hrms_first_name',        fullName.split(' ')[0] ?? '');
+    localStorage.setItem('hrms_last_name',         fullName.split(' ').slice(2).join(' ') ?? '');
+    localStorage.setItem('hrms_designation',       data.designation ?? '');
+    localStorage.setItem('hrms_department',        data.department  ?? '');
+    localStorage.setItem('hrms_login_ts',          String(Date.now()));
+  }
+
+  /* ── LOGIN HANDLER ──────────────────────────────────── */
+  async function handleLogin() {
+    const employeeId = empIdInput.value.trim();
+    const password   = pwdInput.value;
+    if (!employeeId) { showToast('Please enter your Employee ID'); empIdInput.focus(); return; }
+    if (!password)   { showToast('Password is required'); pwdInput.focus(); return; }
+    setLoginLoading(true);
+    try {
+      const res = await fetch(LOGIN_URL, {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ employeeId, password }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        storeDisplaySession(data);
+        showToast(`Welcome back, ${data.fullName?.split(' ')[0] || 'there'}!`, 'success');
+        setTimeout(() => { window.location.href = DASHBOARD; }, 1300);
+        return;
+      }
+      if (res.status === 401 || res.status === 403) {
+        showToast('Invalid Employee ID or password.'); pwdInput.value = ''; pwdInput.focus();
+      } else if (res.status === 404) {
+        showToast('Employee not found. Check your Employee ID.');
+      } else if (res.status === 429) {
+        showToast('Too many attempts. Please wait and try again.', 'warning');
+      } else if (res.status >= 500) {
+        showToast('Server error. Please try again later.');
+      } else {
+        showToast('Login failed. Please try again.');
+      }
+    } catch {
+      showToast('Unable to connect to server. Check your connection.');
+    }
+    setLoginLoading(false);
+  }
+
+  loginBtn.addEventListener('click', handleLogin);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !loginBtn.disabled && !fpOverlay.classList.contains('active')) handleLogin();
+  });
+
+  /* ════════════════════════════════════════════════════════
+     FORGOT PASSWORD STATE MACHINE
+  ════════════════════════════════════════════════════════ */
+
+  const fpOverlay = document.getElementById('fpOverlay');
+
+  // State
+  let fpState = {
+    currentStep: 1,    // 1 | 2 | 3 | 4(success)
+    email: '',
+    otp: '',
+    timerInterval: null,
+    secondsLeft: OTP_TTL_SECONDS,
+    otpExpired: false,
+    resendCooldown: false,
+    resendCount: 0,
+    MAX_RESENDS: 3,
+  };
+
+  // Elements
+  const fpCloseBtn      = document.getElementById('fpCloseBtn');
+  const fpCancelBtn1    = document.getElementById('fpCancelBtn1');
+  const fpEmailInput    = document.getElementById('fpEmail');
+  const fpEmailHint     = document.getElementById('fpEmailHint');
+  const fpSendOtpBtn    = document.getElementById('fpSendOtpBtn');
+  const sendOtpBtnText  = document.getElementById('sendOtpBtnText');
+  const sendOtpBtnIcon  = document.getElementById('sendOtpBtnIcon');
+
+  const fpBackBtn2       = document.getElementById('fpBackBtn2');
+  const fpVerifyOtpBtn   = document.getElementById('fpVerifyOtpBtn');
+  const verifyOtpBtnText = document.getElementById('verifyOtpBtnText');
+  const verifyOtpBtnIcon = document.getElementById('verifyOtpBtnIcon');
+  const fpOtpHint        = document.getElementById('fpOtpHint');
+  const otpCells         = document.querySelectorAll('.otp-cell');
+  const otpTimerDisplay  = document.getElementById('otpTimerDisplay');
+  const otpTimerText     = document.getElementById('otpTimerText');
+  const timerRing        = document.getElementById('timerRing');
+  const ringFill         = document.getElementById('ringFill');
+  const resendOtpBtn     = document.getElementById('resendOtpBtn');
+
+  const fpBackBtn3        = document.getElementById('fpBackBtn3');
+  const fpResetPwdBtn     = document.getElementById('fpResetPwdBtn');
+  const resetPwdBtnText   = document.getElementById('resetPwdBtnText');
+  const resetPwdBtnIcon   = document.getElementById('resetPwdBtnIcon');
+  const fpNewPwdInput     = document.getElementById('fpNewPwd');
+  const fpConfirmPwdInput = document.getElementById('fpConfirmPwd');
+  const fpPwdHint         = document.getElementById('fpPwdHint');
+  const pwdStrengthFill   = document.getElementById('pwdStrengthFill');
+  const pwdStrengthLabel  = document.getElementById('pwdStrengthLabel');
+  const fpNewPwdToggle    = document.getElementById('fpNewPwdToggle');
+  const fpNewPwdToggleIcon= document.getElementById('fpNewPwdToggleIcon');
+  const fpConfirmPwdToggle= document.getElementById('fpConfirmPwdToggle');
+  const fpConfirmPwdToggleIcon = document.getElementById('fpConfirmPwdToggleIcon');
+
+  const fpGoToLoginBtn    = document.getElementById('fpGoToLoginBtn');
+
+  /* ── OPEN / CLOSE OVERLAY ────────────────────────────── */
+  function openFP() {
+    resetFPState();
+    fpOverlay.classList.add('active');
+    setTimeout(() => fpEmailInput.focus(), 350);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeFP() {
+    fpOverlay.classList.remove('active');
+    clearOtpTimer();
+    document.body.style.overflow = '';
+  }
+
+  forgotLink.addEventListener('click', e => { e.preventDefault(); openFP(); });
+  fpCloseBtn.addEventListener('click', closeFP);
+  fpCancelBtn1.addEventListener('click', closeFP);
+  fpGoToLoginBtn.addEventListener('click', closeFP);
+
+  // Close on backdrop click
+  fpOverlay.addEventListener('click', e => {
+    if (e.target === fpOverlay) closeFP();
+  });
+
+  // Trap Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && fpOverlay.classList.contains('active')) closeFP();
+  });
+
+  /* ── RESET STATE ─────────────────────────────────────── */
+  function resetFPState() {
+    fpState = {
+      currentStep: 1, email: '', otp: '',
+      timerInterval: null, secondsLeft: OTP_TTL_SECONDS,
+      otpExpired: false, resendCooldown: false, resendCount: 0, MAX_RESENDS: 3,
+    };
+    // Clear inputs
+    fpEmailInput.value = '';
+    clearOtpCells();
+    fpNewPwdInput.value = '';
+    fpConfirmPwdInput.value = '';
+    // Clear hints
+    hideHint(fpEmailHint);
+    hideHint(fpOtpHint);
+    hideHint(fpPwdHint);
+    // Password strength
+    pwdStrengthFill.style.width = '0%';
+    pwdStrengthLabel.textContent = '—';
+    pwdStrengthLabel.style.color = '#94a3b8';
+    // Steps UI
+    goToStep(1);
+  }
+
+  /* ── STEP NAVIGATION ─────────────────────────────────── */
+  function goToStep(step) {
+    fpState.currentStep = step;
+    // Update panels
+    [1, 2, 3, 4].forEach(s => {
+      const panel = document.getElementById(`fpPanel${s}`);
+      panel.classList.toggle('active', s === step);
+    });
+    // Update breadcrumbs (only steps 1-3)
+    [1, 2, 3].forEach(s => {
+      const item = document.getElementById(`stepItem${s}`);
+      const dot  = document.getElementById(`stepDot${s}`);
+      item.classList.remove('active', 'completed');
+      if (s < step) {
+        item.classList.add('completed');
+        dot.innerHTML = '<i class="fas fa-check" style="font-size:0.65rem"></i>';
+      } else if (s === step) {
+        item.classList.add('active');
+        dot.textContent = s;
+      } else {
+        dot.textContent = s;
+      }
+    });
+  }
+
+  /* ── EMAIL VALIDATION ────────────────────────────────── */
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  }
+
+  /* ── HINT HELPERS ────────────────────────────────────── */
+  function showHint(el, msg) {
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  function hideHint(el) {
+    el.textContent = '';
+    el.classList.remove('visible');
+  }
+
+  /* ── BUTTON LOADING STATE ────────────────────────────── */
+  function setBtnLoading(btn, textEl, iconEl, loading, defaultText, defaultIconClass) {
+    btn.disabled = loading;
+    if (loading) {
+      textEl.textContent = 'Please wait…';
+      iconEl.className = 'fas fa-spinner fa-pulse';
+    } else {
+      textEl.textContent = defaultText;
+      iconEl.className = defaultIconClass;
+    }
+  }
+
+  /* ── OTP CELL KEYBOARD LOGIC (Google/Microsoft style) ── */
+  function clearOtpCells() {
+    otpCells.forEach(c => {
+      c.value = '';
+      c.classList.remove('filled', 'error-cell');
+    });
+  }
+
+  function getOtpValue() {
+    return Array.from(otpCells).map(c => c.value).join('');
+  }
+
+  otpCells.forEach((cell, idx) => {
+    cell.addEventListener('input', e => {
+      const val = e.target.value.replace(/\D/g, '');
+      cell.value = val ? val[val.length - 1] : '';
+      cell.classList.toggle('filled', !!cell.value);
+      hideHint(fpOtpHint);
+      otpCells.forEach(c => c.classList.remove('error-cell'));
+      if (cell.value && idx < otpCells.length - 1) {
+        otpCells[idx + 1].focus();
+      }
+      // Auto-submit when all 6 filled
+      if (getOtpValue().length === 6 && !fpState.otpExpired) {
+        fpVerifyOtpBtn.focus();
+      }
+    });
+
+    cell.addEventListener('keydown', e => {
+      if (e.key === 'Backspace') {
+        if (!cell.value && idx > 0) {
+          otpCells[idx - 1].value = '';
+          otpCells[idx - 1].classList.remove('filled');
+          otpCells[idx - 1].focus();
+        }
+      }
+      if (e.key === 'ArrowLeft' && idx > 0)  otpCells[idx - 1].focus();
+      if (e.key === 'ArrowRight' && idx < otpCells.length - 1) otpCells[idx + 1].focus();
+    });
+
+    // Handle paste into any cell
+    cell.addEventListener('paste', e => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+      if (!pasted) return;
+      otpCells.forEach((c, i) => {
+        c.value = pasted[i] || '';
+        c.classList.toggle('filled', !!c.value);
+      });
+      const nextEmpty = Array.from(otpCells).findIndex(c => !c.value);
+      (otpCells[nextEmpty] || otpCells[5]).focus();
+    });
+  });
+
+  /* ── OTP TIMER ───────────────────────────────────────── */
+  const RING_CIRCUMFERENCE = 2 * Math.PI * 8; // r=8 → ~50.27
+
+  function startOtpTimer() {
+    clearOtpTimer();
+    fpState.secondsLeft  = OTP_TTL_SECONDS;
+    fpState.otpExpired   = false;
+    resendOtpBtn.disabled = true;
+    otpTimerDisplay.className = 'otp-timer ticking';
+    timerRing.classList.remove('expired-ring');
+    updateTimerDisplay(fpState.secondsLeft);
+
+    fpState.timerInterval = setInterval(() => {
+      fpState.secondsLeft--;
+      updateTimerDisplay(fpState.secondsLeft);
+      if (fpState.secondsLeft <= 0) {
+        clearOtpTimer();
+        fpState.otpExpired = true;
+        otpTimerDisplay.className = 'otp-timer expired';
+        timerRing.classList.add('expired-ring');
+        otpTimerText.textContent = 'Expired';
+        if (fpState.resendCount < fpState.MAX_RESENDS) {
+          resendOtpBtn.disabled = false;
+        } else {
+          resendOtpBtn.textContent = 'Max resends reached';
+          resendOtpBtn.disabled = true;
+        }
+        showHint(fpOtpHint, 'OTP has expired. Please request a new code.');
+      }
+    }, 1000);
+  }
+
+  function clearOtpTimer() {
+    if (fpState.timerInterval) {
+      clearInterval(fpState.timerInterval);
+      fpState.timerInterval = null;
+    }
+  }
+
+  function updateTimerDisplay(secs) {
+    const m = String(Math.floor(secs / 60)).padStart(2, '0');
+    const s = String(secs % 60).padStart(2, '0');
+    otpTimerText.textContent = `${m}:${s}`;
+    // Ring animation
+    const ratio = secs / OTP_TTL_SECONDS;
+    const offset = RING_CIRCUMFERENCE * (1 - ratio);
+    ringFill.style.strokeDashoffset = offset;
+    // Pulse red in last 60s
+    if (secs <= 60 && secs > 0) {
+      otpTimerDisplay.className = 'otp-timer expired';
+      timerRing.classList.add('expired-ring');
+    }
+  }
+
+  /* ── PASSWORD STRENGTH ───────────────────────────────── */
+  fpNewPwdInput.addEventListener('input', () => {
+    const val = fpNewPwdInput.value;
+    const score = calcPwdStrength(val);
+    const pct   = [0, 25, 50, 75, 100][score];
+    const colors = ['#94a3b8','#E56C6C','#F59E0B','#5FAFC2','#1F6F7F'];
+    const labels = ['—','Weak','Fair','Good','Strong'];
+    pwdStrengthFill.style.width = pct + '%';
+    pwdStrengthFill.style.background = colors[score];
+    pwdStrengthLabel.textContent = labels[score];
+    pwdStrengthLabel.style.color = colors[score];
+    // Clear confirm hint if user is typing
+    if (fpConfirmPwdInput.value) {
+      if (val === fpConfirmPwdInput.value) hideHint(fpPwdHint);
+    }
+  });
+
+  fpConfirmPwdInput.addEventListener('input', () => {
+    if (fpConfirmPwdInput.value && fpNewPwdInput.value !== fpConfirmPwdInput.value) {
+      showHint(fpPwdHint, 'Passwords do not match.');
+    } else {
+      hideHint(fpPwdHint);
+    }
+  });
+
+  function calcPwdStrength(pwd) {
+    if (!pwd || pwd.length < 4) return 0;
+    let s = 0;
+    if (pwd.length >= 8)  s++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) s++;
+    if (/[0-9]/.test(pwd)) s++;
+    if (/[^A-Za-z0-9]/.test(pwd)) s++;
+    return s; // 0-4
+  }
+
+  /* ── PASSWORD VISIBILITY TOGGLES ────────────────────── */
+  fpNewPwdToggle.addEventListener('click', () => {
+    const is = fpNewPwdInput.type === 'password';
+    fpNewPwdInput.type = is ? 'text' : 'password';
+    fpNewPwdToggleIcon.className = is ? 'far fa-eye' : 'far fa-eye-slash';
+  });
+
+  fpConfirmPwdToggle.addEventListener('click', () => {
+    const is = fpConfirmPwdInput.type === 'password';
+    fpConfirmPwdInput.type = is ? 'text' : 'password';
+    fpConfirmPwdToggleIcon.className = is ? 'far fa-eye' : 'far fa-eye-slash';
+  });
+
+  /* ── STEP 1: SEND OTP ────────────────────────────────── */
+  fpSendOtpBtn.addEventListener('click', sendOtp);
+  fpEmailInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendOtp();
+  });
+
+  async function sendOtp() {
+    const email = fpEmailInput.value.trim().toLowerCase();
+    hideHint(fpEmailHint);
+
+    if (!email) {
+      showHint(fpEmailHint, 'Email address is required.');
+      fpEmailInput.focus(); return;
+    }
+    if (!isValidEmail(email)) {
+      showHint(fpEmailHint, 'Please enter a valid email address.');
+      fpEmailInput.focus(); return;
+    }
+
+    setBtnLoading(fpSendOtpBtn, sendOtpBtnText, sendOtpBtnIcon, true, 'Send OTP', 'fas fa-paper-plane');
+
+    try {
+      const res = await fetch(OTP_SEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (res.ok) {
+        fpState.email = email;
+        fpState.resendCount = 0;
+        document.getElementById('fpEmailDisplay2').textContent = email;
+        document.getElementById('fpEmailDisplay3').textContent = email;
+        clearOtpCells();
+        goToStep(2);
+        startOtpTimer();
+        setTimeout(() => otpCells[0].focus(), 300);
+
+      } else if (res.status === 400) {
+        // RuntimeException from backend — real business message (email not found, rate-limit, etc.)
+        const body = await res.json().catch(() => ({}));
+        showHint(fpEmailHint, body.message || 'Request failed. Please try again.');
+
+      } else if (res.status === 404) {
+        showHint(fpEmailHint, 'No account found with this email. Contact HR.');
+
+      } else if (res.status === 429) {
+        showHint(fpEmailHint, 'Too many requests. Please try again in a few minutes.');
+
+      } else if (res.status >= 500) {
+        showToast('Server error sending OTP. Please try again.', 'error');
+
+      } else {
+        const body = await res.json().catch(() => ({}));
+        showHint(fpEmailHint, body.message || 'Failed to send OTP. Please try again.');
+      }
+
+    } catch {
+      showToast('Network error. Check your connection and try again.', 'error');
+    }
+
+    setBtnLoading(fpSendOtpBtn, sendOtpBtnText, sendOtpBtnIcon, false, 'Send OTP', 'fas fa-paper-plane');
+  }
+
+  /* ── STEP 2: VERIFY OTP ──────────────────────────────── */
+  fpVerifyOtpBtn.addEventListener('click', verifyOtp);
+
+  async function verifyOtp() {
+    const otp = getOtpValue();
+    hideHint(fpOtpHint);
+
+    if (fpState.otpExpired) {
+      showHint(fpOtpHint, 'OTP has expired. Please request a new code.');
+      return;
+    }
+    if (otp.length !== 6) {
+      showHint(fpOtpHint, 'Please enter all 6 digits of the OTP.');
+      otpCells[otp.length]?.focus(); return;
+    }
+
+    setBtnLoading(fpVerifyOtpBtn, verifyOtpBtnText, verifyOtpBtnIcon, true, 'Verify Code', 'fas fa-check-circle');
+
+    try {
+      const res = await fetch(OTP_VALIDATE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: fpState.email, otp }),
+      });
+
+      if (res.ok || res.status === 200) {
+        fpState.otp = otp;
+        clearOtpTimer();
+        goToStep(3);
+        setTimeout(() => fpNewPwdInput.focus(), 300);
+      } else if (res.status === 400 || res.status === 401) {
+        // Wrong OTP — shake cells
+        otpCells.forEach(c => { c.classList.remove('filled'); c.classList.add('error-cell'); });
+        setTimeout(() => otpCells.forEach(c => c.classList.remove('error-cell')), 600);
+        clearOtpCells();
+        otpCells[0].focus();
+        showHint(fpOtpHint, 'Incorrect OTP. Please try again.');
+      } else if (res.status === 410) {
+        // Expired per server
+        fpState.otpExpired = true;
+        clearOtpTimer();
+        showHint(fpOtpHint, 'OTP has expired. Please request a new one.');
+        resendOtpBtn.disabled = fpState.resendCount >= fpState.MAX_RESENDS;
+      } else if (res.status === 429) {
+        showHint(fpOtpHint, 'Too many attempts. Please request a new OTP.');
+        clearOtpTimer();
+        fpState.otpExpired = true;
+      } else if (res.status >= 500) {
+        showToast('Server error validating OTP. Please retry.', 'error');
+      } else {
+        const body = await res.json().catch(() => ({}));
+        showHint(fpOtpHint, body.message || 'Verification failed. Please try again.');
+      }
+    } catch {
+      showToast('Network error. Check your connection.', 'error');
+    }
+
+    setBtnLoading(fpVerifyOtpBtn, verifyOtpBtnText, verifyOtpBtnIcon, false, 'Verify Code', 'fas fa-check-circle');
+  }
+
+  /* ── RESEND OTP ──────────────────────────────────────── */
+  resendOtpBtn.addEventListener('click', async () => {
+    if (fpState.resendCount >= fpState.MAX_RESENDS) {
+      showHint(fpOtpHint, 'Maximum resend limit reached. Please try again later.');
+      resendOtpBtn.disabled = true;
+      return;
+    }
+
+    resendOtpBtn.disabled = true;
+    resendOtpBtn.textContent = 'Sending…';
+    hideHint(fpOtpHint);
+
+    try {
+      const res = await fetch(OTP_SEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: fpState.email }),
+      });
+
+      if (res.ok || res.status === 200) {
+        fpState.resendCount++;
+        clearOtpCells();
+        fpState.otpExpired = false;
+        startOtpTimer();
+        otpCells[0].focus();
+        showToast('New OTP sent to your email.', 'success');
+        const remaining = fpState.MAX_RESENDS - fpState.resendCount;
+        resendOtpBtn.textContent = remaining > 0 ? 'Resend code' : 'Resend code';
+        if (fpState.resendCount >= fpState.MAX_RESENDS) {
+          resendOtpBtn.textContent = 'Max resends reached';
+        }
+      } else if (res.status === 429) {
+        showHint(fpOtpHint, 'Please wait before requesting another OTP.');
+        resendOtpBtn.disabled = false;
+        resendOtpBtn.textContent = 'Resend code';
+      } else {
+        showToast('Failed to resend OTP. Please try again.', 'error');
+        resendOtpBtn.disabled = false;
+        resendOtpBtn.textContent = 'Resend code';
+      }
+    } catch {
+      showToast('Network error. Check your connection.', 'error');
+      resendOtpBtn.disabled = false;
+      resendOtpBtn.textContent = 'Resend code';
+    }
+  });
+
+  /* ── BACK BUTTONS ────────────────────────────────────── */
+  fpBackBtn2.addEventListener('click', () => {
+    clearOtpTimer();
+    clearOtpCells();
+    hideHint(fpOtpHint);
+    goToStep(1);
+    setTimeout(() => fpEmailInput.focus(), 200);
+  });
+
+  fpBackBtn3.addEventListener('click', () => {
+    // Going back to step 2 restarts timer
+    fpState.otp = '';
+    clearOtpCells();
+    hideHint(fpPwdHint);
+    fpNewPwdInput.value = '';
+    fpConfirmPwdInput.value = '';
+    pwdStrengthFill.style.width = '0%';
+    pwdStrengthLabel.textContent = '—';
+    goToStep(2);
+    fpState.otpExpired = false;
+    startOtpTimer();
+    setTimeout(() => otpCells[0].focus(), 200);
+  });
+
+  /* ── STEP 3: RESET PASSWORD ──────────────────────────── */
+  fpResetPwdBtn.addEventListener('click', resetPassword);
+  fpConfirmPwdInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') resetPassword();
+  });
+
+  async function resetPassword() {
+    const newPassword = fpNewPwdInput.value;
+    const confirm     = fpConfirmPwdInput.value;
+    hideHint(fpPwdHint);
+
+    if (!newPassword) {
+      showHint(fpPwdHint, 'Please enter a new password.');
+      fpNewPwdInput.focus(); return;
+    }
+    if (newPassword.length < 8) {
+      showHint(fpPwdHint, 'Password must be at least 8 characters.');
+      fpNewPwdInput.focus(); return;
+    }
+    if (calcPwdStrength(newPassword) < 2) {
+      showHint(fpPwdHint, 'Password too weak. Add uppercase letters, numbers, or symbols.');
+      fpNewPwdInput.focus(); return;
+    }
+    if (!confirm) {
+      showHint(fpPwdHint, 'Please confirm your password.');
+      fpConfirmPwdInput.focus(); return;
+    }
+    if (newPassword !== confirm) {
+      showHint(fpPwdHint, 'Passwords do not match.');
+      fpConfirmPwdInput.focus(); return;
+    }
+
+    setBtnLoading(fpResetPwdBtn, resetPwdBtnText, resetPwdBtnIcon, true, 'Reset Password', 'fas fa-shield-check');
+
+    try {
+      const res = await fetch(OTP_RESET_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: fpState.email, otp: fpState.otp, newPassword }),
+      });
+
+      if (res.ok || res.status === 200) {
+        // Clear sensitive state
+        fpState.otp = '';
+        fpState.email = '';
+        goToStep(4);
+      } else if (res.status === 400) {
+        const body = await res.json().catch(() => ({}));
+        showHint(fpPwdHint, body.message || 'Invalid request. Please start over.');
+      } else if (res.status === 401 || res.status === 410) {
+        // OTP invalidated server-side
+        showToast('Session expired. Please restart the process.', 'warning');
+        setTimeout(() => { clearOtpTimer(); resetFPState(); }, 1500);
+      } else if (res.status === 422) {
+        showHint(fpPwdHint, 'Password does not meet the requirements. Try a stronger one.');
+      } else if (res.status >= 500) {
+        showToast('Server error. Please try again later.', 'error');
+      } else {
+        const body = await res.json().catch(() => ({}));
+        showHint(fpPwdHint, body.message || 'Reset failed. Please try again.');
+      }
+    } catch {
+      showToast('Network error. Check your connection.', 'error');
+    }
+
+    setBtnLoading(fpResetPwdBtn, resetPwdBtnText, resetPwdBtnIcon, false, 'Reset Password', 'fas fa-shield-check');
+  }
+
+})();
+</script>
+
+</body>
+</html>

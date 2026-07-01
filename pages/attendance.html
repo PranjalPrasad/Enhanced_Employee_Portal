@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Attendance | SIEC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <link rel="stylesheet" href="../css/attendance.css" />
+</head>
+
+<style>
+    /* .sidebar-header {
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      padding: 0 16px; 
+      height: var(--header-height);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    } */
+     .nav-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 18px; color: var(--sidebar-text);
+      text-decoration: none; border-radius: 8px; margin: 2px 8px;
+      transition: all 0.25s ease,
+      color 0.2s; white-space: nowrap; font-size: 13.5px;
+    }
+    .nav-link i { font-size: 15px; min-width: 20px; text-align: center; }
+    .nav-link:hover { background: var(--sidebar-hover); color: #fff; }
+    .nav-link.active { background: var(--sidebar-active); color: #fff; }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; white-space: nowrap; }
+
+         .logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+    .logo i { font-size: 20px; color: white; min-width: 20px; }
+    .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; white-space: nowrap; }
+
+
+    .collapse-btn {
+      background: none; border: none; color: var(--sidebar-text);
+      cursor: pointer; padding: 6px; border-radius: 6px; display: flex;
+      align-items: center; transition: background 0.2s;
+    }
+    .collapse-btn:hover { background: var(--sidebar-hover); color: #fff; }
+    .sidebar.collapsed .collapse-btn i { transform: rotate(180deg); }
+
+
+    /* ── Check-In Status Selector ──────────────────────────── */
+.checkin-status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.checkin-status-wrap.hidden {
+  display: none;
+}
+
+.checkin-status-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
+}
+
+.checkin-status-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.status-option-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 40px;
+  border: 1.5px solid var(--border-color, #e2e8f0);
+  background: var(--card-bg, #fff);
+  color: var(--text-secondary, #64748b);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.status-option-btn:hover {
+  border-color: var(--primary, #1B738C);
+  color: var(--primary, #1B738C);
+  background: rgba(27, 115, 140, 0.06);
+}
+
+/* Selected state — each status gets its own accent color */
+.status-option-btn.selected[data-value="Present"] {
+  background: rgba(111, 175, 46, 0.12);
+  border-color: #6faf2e;
+  color: #6faf2e;
+}
+.status-option-btn.selected[data-value="Half Day"] {
+  background: rgba(139, 92, 246, 0.12);
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+.status-option-btn.selected[data-value="Late"] {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+.status-option-btn.selected[data-value="WFH"] {
+  background: rgba(27, 115, 140, 0.12);
+  border-color: var(--primary, #1B738C);
+  color: var(--primary, #1B738C);
+}
+
+
+</style>
+<body>
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="fas fa-briefcase"></i>
+        <span class="logo-text">Employee Portal</span>
+      </div>
+      <button class="collapse-btn" id="collapseSidebarBtn" aria-label="Toggle sidebar">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <ul class="nav-menu">
+        <li><a href="../pages/dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a></li>
+        <li><a href="../pages/profile.html"   class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li>
+        <li><a href="../pages/attendance.html" class="nav-link active"><i class="fas fa-clock"></i><span class="nav-text">Attendance</span></a></li>
+        <li><a href="../pages/expenses.html"  class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li>
+        <li><a href="../pages/leave.html"     class="nav-link"><i class="fas fa-umbrella-beach"></i><span class="nav-text">Leave</span></a></li>
+        <li><a href="../pages/payroll.html"   class="nav-link"><i class="fas fa-money-bill-wave"></i><span class="nav-text">Payroll</span></a></li>
+        <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li>
+        <li><a href="../pages/under-construction.html"  class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content" id="mainContent">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-toggle" id="mobileToggleBtn"><i class="fas fa-bars"></i></button>
+        <div class="page-title">Attendance Overview</div>
+      </div>
+      <div class="header-right">
+        <div class="notification-bell">
+          <button class="icon-btn"><i class="far fa-bell"></i><span class="notification-badge">0</span></button>
+        </div>
+        
+        <div class="user-profile">
+          
+          <button class="profile-btn" id="profileDropdownBtn">
+            <div class="avatar" id="userAvatar">EM</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Employee</div>
+                <div class="user-role" id="userRole"></div>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="../pages/profile.html" class="dropdown-item"><i class="fas fa-user-circle"></i><span>My Profile</span></a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+          </div>
+        </div>
+        
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+
+      <!-- Stat Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon primary"><i class="fas fa-user-check"></i></div>
+            <div class="stat-title">Today's Status</div>
+          </div>
+          <div class="stat-value" id="todayStatusText">--</div>
+          <div class="stat-sub" id="lastActionSub">No action yet</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon success"><i class="fas fa-sign-in-alt"></i></div>
+            <div class="stat-title">Check-In</div>
+          </div>
+          <div class="stat-value" id="checkInTimeDisplay">--:--</div>
+          <div class="stat-sub">Clock in</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-top">
+            <div class="stat-icon danger"><i class="fas fa-sign-out-alt"></i></div>
+            <div class="stat-title">Check-Out</div>
+          </div>
+          <div class="stat-value" id="checkOutTimeDisplay">--:--</div>
+          <div class="stat-sub">Clock out</div>
+        </div>
+        <div class="stat-card highlight">
+          <div class="stat-top">
+            <div class="stat-icon accent"><i class="fas fa-clock"></i></div>
+            <div class="stat-title">Today's Hours</div>
+          </div>
+          <div class="stat-value" id="todayHoursDisplay">0.0 hrs</div>
+          <div class="stat-sub" id="runningTimerSub">--:--:--</div>
+        </div>
+      </div>
+
+      <!-- Action Card -->
+<div class="action-card">
+  <div class="status-badge">
+    <i class="fas fa-circle" style="font-size:11px;color:var(--primary)"></i>
+    <span>Current session:</span>
+    <span class="badge" id="sessionBadge">Not Checked In</span>
+    <div id="liveTimer" class="timer-section" style="display:none">00:00:00</div>
+  </div>
+
+  <!-- ── Check-In Status Selector ── -->
+  <div id="checkInStatusWrap" class="checkin-status-wrap">
+    <label class="checkin-status-label">
+      <i class="fas fa-tag"></i> Select status before check-in
+    </label>
+    <div class="checkin-status-options">
+      <button type="button" class="status-option-btn" data-value="Present">
+        <i class="fas fa-user-check"></i> Present
+      </button>
+      <button type="button" class="status-option-btn" data-value="Half Day">
+        <i class="fas fa-adjust"></i> Half Day
+      </button>
+      <button type="button" class="status-option-btn" data-value="Late">
+        <i class="fas fa-clock"></i> Late
+      </button>
+      <button type="button" class="status-option-btn" data-value="WFH">
+        <i class="fas fa-house-user"></i> WFH
+      </button>
+    </div>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" id="checkInBtn" disabled>
+      <i class="fas fa-sign-in-alt"></i> Check In
+    </button>
+    <button class="btn btn-outline" id="checkOutBtn" disabled>
+      <i class="fas fa-sign-out-alt"></i> Check Out
+    </button>
+  </div>
+</div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label><i class="fas fa-calendar-alt"></i> From</label>
+          <input type="date" id="filterDateFrom" />
+        </div>
+        <div class="filter-group">
+          <label>To</label>
+          <input type="date" id="filterDateTo" />
+        </div>
+        <div class="filter-group">
+          <label>Status</label>
+          <select id="filterStatus">
+            <option value="all">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Late">Late</option>
+            <option value="Half Day">Half Day</option>
+          </select>
+        </div>
+        <button class="btn btn-outline" id="resetFiltersBtn">
+          <i class="fas fa-undo-alt"></i> Reset
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrapper">
+        <div class="table-header-bar">
+          <h3><i class="fas fa-calendar-alt"></i> Attendance History</h3>
+          <button class="btn-view-month" id="viewMonthBtn">
+            <i class="fas fa-chart-line"></i> Monthly Summary
+          </button>
+        </div>
+        <table class="attendance-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Check-In</th>
+              <th>Check-Out</th>
+              <th>Total Hours</th>
+              <th>Status</th>
+              <th style="width:80px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody">
+            <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Monthly Summary Modal -->
+      <div id="monthlyModal" class="monthly-modal" style="display:none;">
+        <div class="monthly-modal-content">
+          <div class="monthly-modal-header">
+            <h2><i class="fas fa-chart-line"></i> Monthly Attendance Summary</h2>
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+          </div>
+          <div class="monthly-modal-body">
+            <div class="month-selector">
+              <select id="monthSelect" class="month-select">
+                <option value="0">January</option><option value="1">February</option>
+                <option value="2">March</option><option value="3">April</option>
+                <option value="4">May</option><option value="5">June</option>
+                <option value="6">July</option><option value="7">August</option>
+                <option value="8">September</option><option value="9">October</option>
+                <option value="10">November</option><option value="11">December</option>
+              </select>
+              <select id="yearSelect" class="year-select"></select>
+            </div>
+            <div class="monthly-stats">
+              <div class="stat-box"><div class="stat-label">Total Working Days</div><div class="stat-number" id="totalDays">0</div></div>
+              <div class="stat-box"><div class="stat-label">Days Present</div><div class="stat-number success" id="presentDays">0</div></div>
+              <div class="stat-box"><div class="stat-label">Days Absent</div><div class="stat-number danger" id="absentDays">0</div></div>
+              <div class="stat-box"><div class="stat-label">Late Arrivals</div><div class="stat-number warning" id="lateDays">0</div></div>
+              <div class="stat-box highlight"><div class="stat-label">Total Hours Worked</div><div class="stat-number primary" id="totalHoursMonth">0.0 hrs</div></div>
+              <div class="stat-box"><div class="stat-label">Average Hours/Day</div><div class="stat-number" id="avgHours">0.0 hrs</div></div>
+            </div>
+            <div class="monthly-table-wrapper">
+              <table class="monthly-table">
+                <thead>
+                  <tr><th>Date</th><th>Day</th><th>Check-In</th><th>Check-Out</th><th>Hours</th><th>Status</th></tr>
+                </thead>
+                <tbody id="monthlyTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-wrapper -->
+  </div><!-- /main-content -->
+</div><!-- /dashboard-container -->
+
+<!-- ══════════════════════════════════════════
+     Edit Notes Modal
+══════════════════════════════════════════ -->
+<div class="edit-modal-overlay" id="editModal">
+  <div class="edit-modal-box">
+    <div class="edit-modal-header">
+      <div class="edit-modal-title">
+        <i class="fas fa-pen-to-square"></i>
+        <span>Edit Attendance Notes</span>
+      </div>
+      <button class="edit-modal-close" id="editModalClose"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="edit-modal-meta">
+      <div class="meta-chip"><i class="fas fa-calendar-day"></i><span id="editModalDate">—</span></div>
+      <div class="meta-chip"><i class="fas fa-tag"></i><span id="editModalStatus">—</span></div>
+      <div class="meta-chip"><i class="fas fa-sign-in-alt"></i><span id="editModalCheckin">—</span></div>
+      <div class="meta-chip"><i class="fas fa-sign-out-alt"></i><span id="editModalCheckout">—</span></div>
+    </div>
+
+    <div class="edit-modal-body">
+      <label class="edit-label">Notes</label>
+      <textarea
+        id="editNotesInput"
+        class="edit-textarea"
+        placeholder="Add notes about this attendance record…"
+        rows="4"
+        maxlength="500"
+      ></textarea>
+      <div class="edit-char-hint"><span id="editCharCount">0</span>/500</div>
+    </div>
+
+    <div class="edit-modal-footer">
+      <button class="edit-btn-cancel" id="editModalCancel">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="edit-btn-save" id="editModalSave">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const firstName = localStorage.getItem('hrms_first_name') || '';
+    const lastName  = localStorage.getItem('hrms_last_name')  || '';
+    const fullName  = (firstName + ' ' + lastName).trim() || 'Employee';
+    const designation = localStorage.getItem('hrms_designation') || '';
+    const department  = localStorage.getItem('hrms_department')  || '';
+
+    const initials = [firstName, lastName]
+      .filter(Boolean).map(n => n[0]).join('').toUpperCase() || 'E';
+
+    const role = designation || department || 'Employee';
+
+    const avatarEl = document.getElementById('userAvatar');
+    if (avatarEl) avatarEl.innerText = initials;
+
+    const userNameEl = document.getElementById('userName');
+    if (userNameEl) userNameEl.innerText = fullName;
+
+    const userRoleEl = document.getElementById('userRole');
+    if (userRoleEl) userRoleEl.innerText = role;
+
+    const dashNameEl = document.getElementById('dashboardUserName');
+    if (dashNameEl) dashNameEl.innerText = firstName || fullName;
+
+    const greetingEl = document.getElementById('greetingMessage');
+    if (greetingEl) {
+      const h = new Date().getHours();
+      const g = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+      greetingEl.innerText = g + "! Here's your dashboard overview.";
+    }
+  });
+</script>
+<script>
+  // Character counter for textarea
+  document.getElementById('editNotesInput').addEventListener('input', function() {
+    document.getElementById('editCharCount').textContent = this.value.length;
+  });
+</script>
+
+
+<script src="../auth.js"></script>
+<script src="../js/attendance.js"></script>
+
+
+</body>
+</html>
