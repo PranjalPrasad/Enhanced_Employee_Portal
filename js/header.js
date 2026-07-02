@@ -9,6 +9,7 @@ class HeaderManager {
     this.setupNotifications();
     this.setupDateTime();
     this.setupProfileDropdown();
+    this.setupLogout();
   }
 
   setupProfileDropdown() {
@@ -25,6 +26,33 @@ class HeaderManager {
         profileDropdown.classList.remove("active");
       });
     }
+  }
+
+  setupLogout() {
+    // Support common logout trigger patterns (id, class, or data-action)
+    const logoutTriggers = document.querySelectorAll(
+      "#logoutBtn, .logout-btn, .logout-link, [data-action='logout']",
+    );
+
+    logoutTriggers.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.handleLogout();
+      });
+    });
+  }
+
+  handleLogout() {
+    // Clear session data
+    localStorage.removeItem("hrms_logged_in");
+    localStorage.removeItem("hrms_user");
+    localStorage.removeItem("hrms_role");
+    localStorage.removeItem("hrms_adminId");
+    localStorage.removeItem("hrms_firstName");
+    localStorage.removeItem("hrms_lastName");
+    localStorage.removeItem("hrms_fullName");
+
+    window.location.href = "index.html";
   }
 
   setupNotifications() {
