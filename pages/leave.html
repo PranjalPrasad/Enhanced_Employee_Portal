@@ -1906,5 +1906,17 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar();
 });
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function () {
+        localStorage.clear();
+        window.location.href = '../index.html';
+      });
+    }
+  });
+</script>
+<!-- <script src="/auth.js"></script> -->
 </body>
 </html>
