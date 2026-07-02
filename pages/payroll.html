@@ -38,21 +38,21 @@
   </script>
 
   <style>
-    
+
     a{
         text-decoration: none;
     }
-    
+
     .sidebar-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 16px; height: var(--header-height);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       flex-shrink: 0;
     }
-    
+
      .nav-link {
       display: flex; align-items: center; gap: 12px;
-      padding: 10px 18px; 
+      padding: 10px 18px;
       color: white;
       text-decoration: none; border-radius: 8px; margin: 2px 8px;
       transition: all 0.25s ease;
@@ -63,7 +63,7 @@
     .nav-link:hover { background: var(--sidebar-hover); color: #fff; }
     .nav-link.active { background: var(--sidebar-active); color: #fff; }
 
-    
+
     .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; white-space: nowrap; }
 
     .logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
@@ -79,7 +79,7 @@
     .collapse-btn:hover { background: var(--sidebar-hover); color: #fff; }
     .sidebar.collapsed .collapse-btn i { transform: rotate(180deg); }
 
-   
+
   </style>
 </head>
 
@@ -115,14 +115,14 @@
     <nav class="sidebar-nav">
       <ul class="nav-menu">
         <li><a href="../pages/dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a></li>
-        <li><a href="../pages/profile.html" class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li>
+        <!-- <li><a href="../pages/profile.html" class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li> -->
         <li><a href="../pages/attendance.html" class="nav-link"><i class="fas fa-clock"></i><span class="nav-text">Attendance</span></a></li>
-        <li><a href="../pages/expenses.html" class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li>
+        <!-- <li><a href="../pages/expenses.html" class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li> -->
         <li><a href="../pages/leave.html" class="nav-link"><i class="fas fa-umbrella-beach"></i><span class="nav-text">Leave</span></a></li>
         <li><a href="../pages/payroll.html" class="nav-link active"><i class="fas fa-money-bill-wave"></i><span class="nav-text">Payroll</span></a></li>
-        <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li>
+        <!-- <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li> -->
 
-        <li><a href="../pages/under-construction.html" class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li>
+        <!-- <li><a href="../pages/under-construction.html" class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li> -->
       </ul>
     </nav>
 
@@ -163,13 +163,13 @@
             </div>
             <i class="text-xs fas fa-chevron-down text-muted"></i>
           </button>
-          
+
           <div id="profileDropdown" class="absolute top-[110%] right-0 min-w-[200px] p-1.5 bg-white/95 backdrop-blur border border-border rounded-2xl shadow-xl opacity-0 invisible -translate-y-2 transition-all duration-200 z-[1100]">
             <a href="#" class="flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-primary-lt hover:text-primary transition-colors no-underline"><i class="fas fa-user-circle"></i>My Profile</a>
             <div class="my-1 border-t border-border"></div>
             <button class="logout-item flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-medium text-red-600 rounded-xl hover:bg-primary-lt hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"><i class="fas fa-sign-out-alt"></i>Logout</button>
           </div>
-          
+
         </div>
       </div>
     </header>
@@ -264,28 +264,77 @@
   </div>
 </div>
 
-<script src="../auth.js"></script>
+<!-- <script src="../auth.js"></script> -->
 
 <!-- ═══════════════════════════════════════════════════════════════
      JAVASCRIPT  –  single DOMContentLoaded module, no bare globals
+     NOTE: Fully frontend-driven. No backend/API calls — all payslip
+     data is served from the DUMMY_PAYSLIPS array below.
 ════════════════════════════════════════════════════════════════ -->
 <script>
 'use strict';
-
-/* ─── Pre-flight: guard against missing jsPDF ───────────────── */
-window.__payrollReady = false;
 
 document.addEventListener('DOMContentLoaded', function () {
 
   /* ══════════════════════════════════════════════════════════════
      CONSTANTS
   ══════════════════════════════════════════════════════════════ */
-  var BASE_URL  = 'http://localhost:8086';
   var MONTH_MAP = {
     JANUARY:'January', FEBRUARY:'February', MARCH:'March',    APRIL:'April',
     MAY:'May',         JUNE:'June',          JULY:'July',      AUGUST:'August',
     SEPTEMBER:'September', OCTOBER:'October', NOVEMBER:'November', DECEMBER:'December'
   };
+
+  /* ══════════════════════════════════════════════════════════════
+     DUMMY DATA  (replaces backend API response)
+     otAmount: overtime amount paid that month — 0 when the employee
+     did not work / get paid any OT that month. Everything else
+     (net pay, gross pay) already factors OT in correctly below.
+  ══════════════════════════════════════════════════════════════ */
+  var DUMMY_PAYSLIPS = [
+    {
+      fullName:'Alex Mercer', employeeId:'EMP10234', designation:'Senior Developer', department:'Engineering',
+      payrollMonth:'MARCH', payrollYear:2025, status:'PAID', initiatedBy:'HR Admin', updatedAt:'2025-04-02',
+      basicSalary:85000, hra:34000, allowances:25350, otAmount:4500,
+      employeePf:10200, employerPf:10200, esi:0, tds:5408,
+      grossSalary:148850, totalDeductions:15608, netSalary:133242
+    },
+    {
+      fullName:'Alex Mercer', employeeId:'EMP10234', designation:'Senior Developer', department:'Engineering',
+      payrollMonth:'FEBRUARY', payrollYear:2025, status:'PAID', initiatedBy:'HR Admin', updatedAt:'2025-03-02',
+      basicSalary:85000, hra:34000, allowances:15350, otAmount:0,
+      employeePf:10200, employerPf:10200, esi:0, tds:5408,
+      grossSalary:134350, totalDeductions:15608, netSalary:118742
+    },
+    {
+      fullName:'Alex Mercer', employeeId:'EMP10234', designation:'Senior Developer', department:'Engineering',
+      payrollMonth:'JANUARY', payrollYear:2025, status:'PAID', initiatedBy:'HR Admin', updatedAt:'2025-02-02',
+      basicSalary:85000, hra:34000, allowances:15350, otAmount:2200,
+      employeePf:10200, employerPf:10200, esi:0, tds:5408,
+      grossSalary:136550, totalDeductions:15608, netSalary:120942
+    },
+    {
+      fullName:'Alex Mercer', employeeId:'EMP10234', designation:'Senior Developer', department:'Engineering',
+      payrollMonth:'DECEMBER', payrollYear:2024, status:'PAID', initiatedBy:'HR Admin', updatedAt:'2025-01-02',
+      basicSalary:82060, hra:32824, allowances:15350, otAmount:0,
+      employeePf:9847, employerPf:9847, esi:0, tds:5204,
+      grossSalary:130234, totalDeductions:15051, netSalary:115183
+    },
+    {
+      fullName:'Alex Mercer', employeeId:'EMP10234', designation:'Senior Developer', department:'Engineering',
+      payrollMonth:'NOVEMBER', payrollYear:2024, status:'PAID', initiatedBy:'HR Admin', updatedAt:'2024-12-02',
+      basicSalary:85000, hra:34000, allowances:20350, otAmount:3000,
+      employeePf:10200, employerPf:10200, esi:0, tds:5408,
+      grossSalary:142350, totalDeductions:15608, netSalary:126742
+    },
+    {
+      fullName:'Alex Mercer', employeeId:'EMP10234', designation:'Senior Developer', department:'Engineering',
+      payrollMonth:'OCTOBER', payrollYear:2024, status:'PAID', initiatedBy:'HR Admin', updatedAt:'2024-11-02',
+      basicSalary:85000, hra:34000, allowances:15350, otAmount:0,
+      employeePf:10200, employerPf:10200, esi:0, tds:5408,
+      grossSalary:134350, totalDeductions:15608, netSalary:118742
+    }
+  ];
 
   /* ══════════════════════════════════════════════════════════════
      STATE
@@ -387,37 +436,20 @@ document.addEventListener('DOMContentLoaded', function () {
     var ln  = localStorage.getItem('hrms_last_name')   || '';
     var des = localStorage.getItem('hrms_designation') || '';
     var dep = localStorage.getItem('hrms_department')  || '';
-    var fullName = (fn + ' ' + ln).trim() || 'Employee';
-    var initials = ([fn,ln].filter(Boolean).map(function(x){return x[0];}).join('') || 'E').toUpperCase();
+    var fullName = (fn + ' ' + ln).trim() || 'Alex Mercer';
+    var initials = ([fn,ln].filter(Boolean).map(function(x){return x[0];}).join('') || 'AM').toUpperCase();
     document.getElementById('userAvatar').textContent = initials;
     document.getElementById('userName').textContent   = fullName;
-    document.getElementById('userRole').textContent   = des || dep || 'Employee';
+    document.getElementById('userRole').textContent   = des || dep || 'Senior Developer';
   }
 
   /* ══════════════════════════════════════════════════════════════
-     API
+     LOAD PAYSLIPS  (frontend-only — reads DUMMY_PAYSLIPS)
   ══════════════════════════════════════════════════════════════ */
   function loadPayslips() {
-    var empId = localStorage.getItem('hrms_employee_id') || '';
-    fetch(BASE_URL + '/api/v1/payroll/employee-payroll/' + empId)
-      .then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function(json) {
-        if (!json.success) throw new Error(json.message || 'API error');
-        allPayslips = json.data || [];
-        populateYearFilter();
-        applyFilters();
-      })
-      .catch(function(err) {
-        console.error('[Payroll]', err);
-        showToast('Could not load payslips. Please try again.', 'error');
-        document.getElementById('payslipGrid').innerHTML = '';
-        var es = document.getElementById('emptyState');
-        es.classList.remove('hidden');
-        es.classList.add('flex');
-      });
+    allPayslips = DUMMY_PAYSLIPS.slice();
+    populateYearFilter();
+    applyFilters();
   }
 
   /* ══════════════════════════════════════════════════════════════
@@ -521,7 +553,9 @@ document.addEventListener('DOMContentLoaded', function () {
    * Build the 4-column merged table body.
    * earnings and deductions are arrays of [label, formattedValue].
    * We ALWAYS render all rows — no filtering on zero — so every
-   * field is visible even when value is 0.00.
+   * field is visible even when value is 0.00, EXCEPT the Overtime
+   * row which is only added to the earnings array when > 0 (see
+   * openModal / generatePDF below).
    */
   function buildTableBody(earnings, deductions) {
     var maxLen = Math.max(earnings.length, deductions.length);
@@ -544,20 +578,26 @@ document.addEventListener('DOMContentLoaded', function () {
     var basic    = n(s.basicSalary);
     var hra      = n(s.hra);
     var allow    = n(s.allowances);
+    var otAmt    = n(s.otAmount);          // Overtime amount, 0 if none
     var gross    = n(s.grossSalary);
-    var empPf    = n(s.employeePf);    // null-safe via n()
-    var emplrPf  = n(s.employerPf);    // null-safe via n()
+    var empPf    = n(s.employeePf);
+    var emplrPf  = n(s.employerPf);
     var esi      = n(s.esi);
     var tds      = n(s.tds);
     var totalDed = n(s.totalDeductions);
     var net      = n(s.netSalary);
 
-    /* Always show all defined rows — even when 0.00 */
+    /* Always show all defined rows — even when 0.00 —
+       EXCEPT Overtime, which only appears when the employee
+       actually received an OT payout that month. */
     var earnings = [
       ['Basic Salary',               '\u20B9 ' + fmtNum(basic)],
       ['House Rent Allowance (HRA)', '\u20B9 ' + fmtNum(hra)],
       ['Other Allowances',           '\u20B9 ' + fmtNum(allow)],
     ];
+    if (otAmt > 0) {
+      earnings.push(['Overtime (OT)', '\u20B9 ' + fmtNum(otAmt)]);
+    }
     var deductions = [
       ['Employee PF',      '\u20B9 ' + fmtNum(empPf)],
       ['Employer PF',      '\u20B9 ' + fmtNum(emplrPf)],
@@ -669,6 +709,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var basic    = n(s.basicSalary);
     var hra      = n(s.hra);
     var allow    = n(s.allowances);
+    var otAmt    = n(s.otAmount);          // Overtime amount, 0 if none
     var gross    = n(s.grossSalary);
     var empPf    = n(s.employeePf);
     var emplrPf  = n(s.employerPf);
@@ -713,7 +754,10 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ── 2. Employee Info grid ──
        8 fields, rendered as left col (4) + right col (4).
        Each row: label at y+rowH*i+3, value at y+rowH*i+8.
-       rowH = 9mm, total box = 4*9 = 36mm + 2mm padding = 38mm */
+       rowH = 9mm, total box = 4*9 = 36mm + 2mm padding = 38mm
+       NOTE: intentionally NO "OT Eligible" field here — OT is
+       purely a payroll-engine input; only its resulting amount
+       (if any) shows up in the Earnings table below. */
     var ROW_H = 9;
     var BOX_H = 4 * ROW_H + 2;
     doc.setFillColor.apply(doc, SOFT);
@@ -749,13 +793,19 @@ document.addEventListener('DOMContentLoaded', function () {
     y += BOX_H + 6;
 
     /* ── 3. Earnings / Deductions table ──
-       Always render all rows (no zero-filter) so layout is stable. */
+       Always render all rows (no zero-filter) so layout is stable,
+       EXCEPT Overtime — only inserted when otAmt > 0, right before
+       the "Gross Earnings" total row. */
     var earningRows = [
       ['Basic Salary',    fmtPDF(basic)],
       ['HRA',             fmtPDF(hra)],
-      ['Other Allowances',fmtPDF(allow)],
-      ['Gross Earnings',  fmtPDF(gross)]      /* total row */
+      ['Other Allowances',fmtPDF(allow)]
     ];
+    if (otAmt > 0) {
+      earningRows.push(['Overtime (OT)', fmtPDF(otAmt)]);
+    }
+    earningRows.push(['Gross Earnings', fmtPDF(gross)]);   /* total row */
+
     var deductRows = [
       ['Employee PF',      fmtPDF(empPf)],
       ['Employer PF',      fmtPDF(emplrPf)],
@@ -917,12 +967,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ══════════════════════════════════════════════════════════════
-     LOGOUT
-  ══════════════════════════════════════════════════════════════ */
-
-
-  /* ══════════════════════════════════════════════════════════════
-     BOOT  –  preload logo then start everything
+     BOOT  –  preload logo then start everything (frontend-only)
   ══════════════════════════════════════════════════════════════ */
   initHeader();
   preloadLogo().then(function() {

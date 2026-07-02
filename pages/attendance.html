@@ -12,15 +12,6 @@
 </head>
 
 <style>
-    /* .sidebar-header {
-      display: flex; 
-      align-items: center; 
-      justify-content: space-between;
-      padding: 0 16px; 
-      height: var(--header-height);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      flex-shrink: 0;
-    } */
      .nav-link {
       display: flex; align-items: center; gap: 12px;
       padding: 10px 18px; color: var(--sidebar-text);
@@ -31,12 +22,10 @@
     .nav-link i { font-size: 15px; min-width: 20px; text-align: center; }
     .nav-link:hover { background: var(--sidebar-hover); color: #fff; }
     .nav-link.active { background: var(--sidebar-active); color: #fff; }
-        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; white-space: nowrap; }
-
-         .logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
-    .logo i { font-size: 20px; color: white; min-width: 20px; }
     .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px; white-space: nowrap; }
 
+    .logo { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+    .logo i { font-size: 20px; color: white; min-width: 20px; }
 
     .collapse-btn {
       background: none; border: none; color: var(--sidebar-text);
@@ -46,80 +35,31 @@
     .collapse-btn:hover { background: var(--sidebar-hover); color: #fff; }
     .sidebar.collapsed .collapse-btn i { transform: rotate(180deg); }
 
+    /* ── Biometric notice badge ─────────────────────────────── */
+    .biometric-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--primary-dark, #145c6b);
+      background: var(--primary-soft, #e6f4f6);
+      border: 1px solid rgba(31,111,127,0.25);
+      padding: 9px 16px;
+      border-radius: 40px;
+    }
+    .biometric-note i { color: var(--primary, #1f6f7f); font-size: 14px; }
 
-    /* ── Check-In Status Selector ──────────────────────────── */
-.checkin-status-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.checkin-status-wrap.hidden {
-  display: none;
-}
-
-.checkin-status-label {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  letter-spacing: 0.3px;
-}
-
-.checkin-status-options {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.status-option-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 16px;
-  border-radius: 40px;
-  border: 1.5px solid var(--border-color, #e2e8f0);
-  background: var(--card-bg, #fff);
-  color: var(--text-secondary, #64748b);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.status-option-btn:hover {
-  border-color: var(--primary, #1B738C);
-  color: var(--primary, #1B738C);
-  background: rgba(27, 115, 140, 0.06);
-}
-
-/* Selected state — each status gets its own accent color */
-.status-option-btn.selected[data-value="Present"] {
-  background: rgba(111, 175, 46, 0.12);
-  border-color: #6faf2e;
-  color: #6faf2e;
-}
-.status-option-btn.selected[data-value="Half Day"] {
-  background: rgba(139, 92, 246, 0.12);
-  border-color: #8b5cf6;
-  color: #8b5cf6;
-}
-.status-option-btn.selected[data-value="Late"] {
-  background: rgba(245, 158, 11, 0.12);
-  border-color: #f59e0b;
-  color: #f59e0b;
-}
-.status-option-btn.selected[data-value="WFH"] {
-  background: rgba(27, 115, 140, 0.12);
-  border-color: var(--primary, #1B738C);
-  color: var(--primary, #1B738C);
-}
-
-
+    /* ── Raise correction request button (table action) ──────── */
+    .btn-action-correction {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      background: #fff4e0; color: #b45309;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-size: 12px;
+      transition: all 0.2s;
+    }
+    .btn-action-correction:hover { background: #b45309; color: #fff; transform: scale(1.08); }
 </style>
 <body>
 <div class="dashboard-container">
@@ -138,13 +78,13 @@
     <nav class="sidebar-nav">
       <ul class="nav-menu">
         <li><a href="../pages/dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a></li>
-        <li><a href="../pages/profile.html"   class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li>
+        <!-- <li><a href="../pages/profile.html"   class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li> -->
         <li><a href="../pages/attendance.html" class="nav-link active"><i class="fas fa-clock"></i><span class="nav-text">Attendance</span></a></li>
-        <li><a href="../pages/expenses.html"  class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li>
+        <!-- <li><a href="../pages/expenses.html"  class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li> -->
         <li><a href="../pages/leave.html"     class="nav-link"><i class="fas fa-umbrella-beach"></i><span class="nav-text">Leave</span></a></li>
         <li><a href="../pages/payroll.html"   class="nav-link"><i class="fas fa-money-bill-wave"></i><span class="nav-text">Payroll</span></a></li>
-        <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li>
-        <li><a href="../pages/under-construction.html"  class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li>
+        <!-- <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li> -->
+        <!-- <li><a href="../pages/under-construction.html"  class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li> -->
       </ul>
     </nav>
     <div class="sidebar-footer">
@@ -167,9 +107,9 @@
         <div class="notification-bell">
           <button class="icon-btn"><i class="far fa-bell"></i><span class="notification-badge">0</span></button>
         </div>
-        
+
         <div class="user-profile">
-          
+
           <button class="profile-btn" id="profileDropdownBtn">
             <div class="avatar" id="userAvatar">EM</div>
             <div class="user-info">
@@ -184,14 +124,14 @@
             <button class="dropdown-item logout-item"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
           </div>
         </div>
-        
+
       </div>
     </header>
 
     <!-- Content -->
     <div class="content-wrapper">
 
-      <!-- Stat Cards -->
+      <!-- Stat Cards (read-only, sourced from biometric device) -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-top">
@@ -199,16 +139,16 @@
             <div class="stat-title">Today's Status</div>
           </div>
           <div class="stat-value" id="todayStatusText">--</div>
-          <div class="stat-sub" id="lastActionSub">No action yet</div>
+          <div class="stat-sub" id="lastActionSub">No record yet</div>
         </div>
-        
+
         <div class="stat-card">
           <div class="stat-top">
             <div class="stat-icon success"><i class="fas fa-sign-in-alt"></i></div>
             <div class="stat-title">Check-In</div>
           </div>
           <div class="stat-value" id="checkInTimeDisplay">--:--</div>
-          <div class="stat-sub">Clock in</div>
+          <div class="stat-sub">From biometric device</div>
         </div>
         <div class="stat-card">
           <div class="stat-top">
@@ -216,7 +156,7 @@
             <div class="stat-title">Check-Out</div>
           </div>
           <div class="stat-value" id="checkOutTimeDisplay">--:--</div>
-          <div class="stat-sub">Clock out</div>
+          <div class="stat-sub">From biometric device</div>
         </div>
         <div class="stat-card highlight">
           <div class="stat-top">
@@ -224,68 +164,45 @@
             <div class="stat-title">Today's Hours</div>
           </div>
           <div class="stat-value" id="todayHoursDisplay">0.0 hrs</div>
-          <div class="stat-sub" id="runningTimerSub">--:--:--</div>
+          <div class="stat-sub" id="runningTimerSub">Total recorded today</div>
         </div>
       </div>
 
-      <!-- Action Card -->
-<div class="action-card">
-  <div class="status-badge">
-    <i class="fas fa-circle" style="font-size:11px;color:var(--primary)"></i>
-    <span>Current session:</span>
-    <span class="badge" id="sessionBadge">Not Checked In</span>
-    <div id="liveTimer" class="timer-section" style="display:none">00:00:00</div>
-  </div>
+      <!-- Info Card (replaces manual Check In/Out action card) -->
+      <div class="action-card">
+        <div class="status-badge">
+          <i class="fas fa-circle" style="font-size:11px;color:var(--primary)"></i>
+          <span>Today's session:</span>
+          <span class="badge" id="sessionBadge">Not Marked</span>
+        </div>
 
-  <!-- ── Check-In Status Selector ── -->
-  <div id="checkInStatusWrap" class="checkin-status-wrap">
-    <label class="checkin-status-label">
-      <i class="fas fa-tag"></i> Select status before check-in
-    </label>
-    <div class="checkin-status-options">
-      <button type="button" class="status-option-btn" data-value="Present">
-        <i class="fas fa-user-check"></i> Present
-      </button>
-      <button type="button" class="status-option-btn" data-value="Half Day">
-        <i class="fas fa-adjust"></i> Half Day
-      </button>
-      <button type="button" class="status-option-btn" data-value="Late">
-        <i class="fas fa-clock"></i> Late
-      </button>
-      <button type="button" class="status-option-btn" data-value="WFH">
-        <i class="fas fa-house-user"></i> WFH
-      </button>
-    </div>
-  </div>
-
-  <div class="btn-group">
-    <button class="btn btn-primary" id="checkInBtn" disabled>
-      <i class="fas fa-sign-in-alt"></i> Check In
-    </button>
-    <button class="btn btn-outline" id="checkOutBtn" disabled>
-      <i class="fas fa-sign-out-alt"></i> Check Out
-    </button>
-  </div>
-</div>
+        <div class="biometric-note">
+          <i class="fas fa-fingerprint"></i>
+          <span>Attendance auto-marked via Biometric Device</span>
+        </div>
+      </div>
 
       <!-- Filter Bar -->
       <div class="filter-bar">
+        <label><i class="fas fa-calendar-alt"></i> From</label>
         <div class="filter-group">
-          <label><i class="fas fa-calendar-alt"></i> From</label>
           <input type="date" id="filterDateFrom" />
         </div>
+        <label>To</label>
         <div class="filter-group">
-          <label>To</label>
           <input type="date" id="filterDateTo" />
         </div>
+        <label>Status</label>
         <div class="filter-group">
-          <label>Status</label>
           <select id="filterStatus">
             <option value="all">All</option>
             <option value="Present">Present</option>
             <option value="Absent">Absent</option>
             <option value="Late">Late</option>
             <option value="Half Day">Half Day</option>
+            <option value="OD">OD</option>
+            <option value="C-off">C-off</option>
+            <option value="Weekly-Off Present">Weekly-Off Present</option>
           </select>
         </div>
         <button class="btn btn-outline" id="resetFiltersBtn">
@@ -309,7 +226,7 @@
               <th>Check-Out</th>
               <th>Total Hours</th>
               <th>Status</th>
-              <th style="width:80px;">Action</th>
+              <th style="width:100px;">Action</th>
             </tr>
           </thead>
           <tbody id="attendanceTableBody">
@@ -362,14 +279,17 @@
 </div><!-- /dashboard-container -->
 
 <!-- ══════════════════════════════════════════
-     Edit Notes Modal
+     Raise Correction Request Modal
+     (replaces the old "Edit Notes" modal — employees can no longer
+     edit attendance directly since it is biometric-sourced; they can
+     only submit a request for HR/Admin to review and correct it.)
 ══════════════════════════════════════════ -->
 <div class="edit-modal-overlay" id="editModal">
   <div class="edit-modal-box">
     <div class="edit-modal-header">
       <div class="edit-modal-title">
-        <i class="fas fa-pen-to-square"></i>
-        <span>Edit Attendance Notes</span>
+        <i class="fas fa-flag"></i>
+        <span>Raise Correction Request</span>
       </div>
       <button class="edit-modal-close" id="editModalClose"><i class="fas fa-times"></i></button>
     </div>
@@ -382,11 +302,11 @@
     </div>
 
     <div class="edit-modal-body">
-      <label class="edit-label">Notes</label>
+      <label class="edit-label">What's wrong with this record?</label>
       <textarea
         id="editNotesInput"
         class="edit-textarea"
-        placeholder="Add notes about this attendance record…"
+        placeholder="e.g. I was present on this day but biometric device did not register my check-in…"
         rows="4"
         maxlength="500"
       ></textarea>
@@ -398,7 +318,7 @@
         <i class="fas fa-times"></i> Cancel
       </button>
       <button class="edit-btn-save" id="editModalSave">
-        <i class="fas fa-save"></i> Save Changes
+        <i class="fas fa-paper-plane"></i> Submit Request
       </button>
     </div>
   </div>
@@ -446,7 +366,7 @@
 </script>
 
 
-<script src="../auth.js"></script>
+<!-- <script src="../auth.js"></script> -->
 <script src="../js/attendance.js"></script>
 
 

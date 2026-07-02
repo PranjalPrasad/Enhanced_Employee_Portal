@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- <link rel="stylesheet" href="../css/leave.css" /> -->
-
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -771,14 +769,9 @@
     <nav class="sidebar-nav">
         <ul class="nav-menu">
             <li><a href="../pages/dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i><span class="nav-text">Dashboard</span></a></li>
-            <li><a href="../pages/profile.html"   class="nav-link"><i class="fas fa-user"></i><span class="nav-text">Profile</span></a></li>
             <li><a href="../pages/attendance.html" class="nav-link"><i class="fas fa-clock"></i><span class="nav-text">Attendance</span></a></li>
-            <li><a href="../pages/expenses.html" class="nav-link"><i class="fas fa-money-bill"></i><span class="nav-text">Expenses</span></a></li>
             <li><a href="../pages/leave.html" class="nav-link active"><i class="fas fa-umbrella-beach"></i><span class="nav-text">Leave</span></a></li>
             <li><a href="../pages/payroll.html" class="nav-link"><i class="fas fa-money-bill-wave"></i><span class="nav-text">Payroll</span></a></li>
-            <li><a href="../pages/resignation.html" class="nav-link"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Resignation</span></a></li>
-
-            <li><a href="../pages/under-construction.html"  class="nav-link"><i class="fas fa-file-contract"></i><span class="nav-text">Company Policies</span></a></li>
         </ul>
     </nav>
     <div class="sidebar-footer">
@@ -1121,50 +1114,122 @@
     </div>
 </div>
 
-<script src="../auth.js"></script>
-
 <script>
 // ============================================================
-//  CONFIG
+//  FRONTEND-ONLY — NO BACKEND CONNECTIVITY
+//  All data is dummy / static, managed in memory.
 // ============================================================
-const BASE_URL = 'http://localhost:8086/api';
 
-// Employee info from localStorage (set during login)
-const LOGGED_EMP_ID   = localStorage.getItem('hrms_employee_id')       || sessionStorage.getItem('employeeId')      || '';
-const EMPLOYEE_FNAME  = localStorage.getItem('hrms_first_name')        || '';
-const EMPLOYEE_LNAME  = localStorage.getItem('hrms_last_name')         || '';
-const EMPLOYEE_NAME   = (EMPLOYEE_FNAME + ' ' + EMPLOYEE_LNAME).trim() || sessionStorage.getItem('employeeName')    || '';
-const EMPLOYEE_DEPT   = localStorage.getItem('hrms_designation')        || sessionStorage.getItem('designation')      || '';
-const EMPLOYEE_TYPE   = localStorage.getItem('hrms_employment_type')   || sessionStorage.getItem('employmentType')  || '';
+// ── Dummy Employee (from login) ──────────────────────────────
+const CURRENT_EMP = {
+    id:      'EMP001',
+    name:    'Aarav Sharma',
+    dept:    'Software Engineering',
+    empType: 'Permanent'
+};
 
-// ============================================================
-//  STATE  — NO FALLBACK / MOCK DATA
-// ============================================================
-let CURRENT_EMP  = {};
-let leaveTypes   = [];   // string[] — only from DB
-let balanceData  = {};   // only from DB
-let myLeaves     = [];   // only from DB
-let cancelTargetId = null;
-const YEAR = String(new Date().getFullYear());
-let calYear  = new Date().getFullYear();
-let calMonth = new Date().getMonth();
-let miniChart = null;
+// ── Dummy Leave Types ────────────────────────────────────────
+const LEAVE_TYPES = ['Annual Leave', 'Sick Leave', 'Casual Leave', 'Compensatory Off'];
 
-// ============================================================
-//  API UTILITY
-// ============================================================
-async function apiFetch(url, options = {}) {
-    const res = await fetch(url, {
-        headers: { 'Content-Type': 'application/json', ...options.headers },
-        ...options
-    });
-    if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`HTTP ${res.status}: ${err.substring(0, 120)}`);
+// ── Dummy Balance ────────────────────────────────────────────
+const BALANCE_DATA = {
+    totalAllotted: 24,
+    totalUsed: 8,
+    totalRemaining: 16,
+    balances: {
+        'Annual Leave':      { allot: 15, used: 6, remaining: 9 },
+        'Sick Leave':        { allot: 7,  used: 2, remaining: 5 },
+        'Casual Leave':      { allot: 2,  used: 0, remaining: 2 },
+        'Compensatory Off':  { allot: 0,  used: 0, remaining: 0 }
     }
-    return res.json();
-}
+};
 
+// ── Dummy Leave Applications ────────────────────────────────
+let myLeaves = [
+    {
+        id: 1,
+        leaveType: 'Annual Leave',
+        fromDate: '2026-06-10',
+        toDate: '2026-06-12',
+        numberOfDays: 3,
+        reason: 'Family vacation',
+        description: 'Going to mountains with family',
+        status: 'approved',
+        addedOn: '2026-06-01T10:30:00Z',
+        actionBy: 'HR Manager',
+        actionDate: '2026-06-02T14:00:00Z',
+        remarks: 'Approved. Enjoy your trip!'
+    },
+    {
+        id: 2,
+        leaveType: 'Sick Leave',
+        fromDate: '2026-06-18',
+        toDate: '2026-06-18',
+        numberOfDays: 1,
+        reason: 'Doctor appointment',
+        description: 'Scheduled checkup',
+        status: 'pending',
+        addedOn: '2026-06-16T09:15:00Z',
+        actionBy: null,
+        actionDate: null,
+        remarks: null
+    },
+    {
+        id: 3,
+        leaveType: 'Annual Leave',
+        fromDate: '2026-05-20',
+        toDate: '2026-05-22',
+        numberOfDays: 3,
+        reason: 'Wedding ceremony',
+        description: 'Cousin wedding',
+        status: 'approved',
+        addedOn: '2026-05-10T11:00:00Z',
+        actionBy: 'HR Manager',
+        actionDate: '2026-05-12T16:30:00Z',
+        remarks: 'Approved'
+    },
+    {
+        id: 4,
+        leaveType: 'Sick Leave',
+        fromDate: '2026-05-05',
+        toDate: '2026-05-05',
+        numberOfDays: 1,
+        reason: 'Migraine',
+        description: '',
+        status: 'rejected',
+        addedOn: '2026-05-04T08:45:00Z',
+        actionBy: 'HR Manager',
+        actionDate: '2026-05-04T17:00:00Z',
+        remarks: 'No sick leave balance available. Please take casual leave instead.'
+    },
+    {
+        id: 5,
+        leaveType: 'Casual Leave',
+        fromDate: '2026-07-01',
+        toDate: '2026-07-01',
+        numberOfDays: 1,
+        reason: 'Personal errand',
+        description: '',
+        status: 'pending',
+        addedOn: '2026-06-28T13:20:00Z',
+        actionBy: null,
+        actionDate: null,
+        remarks: null
+    }
+];
+
+let nextId = 6;
+
+// ── UI State ──────────────────────────────────────────────────
+let cancelTargetId = null;
+let miniChart = null;
+const YEAR = new Date().getFullYear();
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+// ============================================================
+//  TOAST
+// ============================================================
 function showToast(msg, type = 'success') {
     const icons = { success: 'check-circle', error: 'times-circle', info: 'info-circle' };
     const t = document.createElement('div');
@@ -1193,16 +1258,9 @@ function emptyState(icon, msg, sub = '') {
 }
 
 // ============================================================
-//  1. LOAD EMPLOYEE PROFILE  (from localStorage — set at login)
+//  EMPLOYEE PROFILE (from dummy)
 // ============================================================
 function loadEmployeeProfile() {
-    CURRENT_EMP = {
-        id:      LOGGED_EMP_ID,
-        name:    EMPLOYEE_NAME,
-        dept:    EMPLOYEE_DEPT,
-        empType: EMPLOYEE_TYPE
-    };
-
     const initials = CURRENT_EMP.name
         .split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || '--';
 
@@ -1212,72 +1270,30 @@ function loadEmployeeProfile() {
 }
 
 // ============================================================
-//  2. LOAD LEAVE TYPES  — NO FALLBACK
+//  POPULATE DROPDOWNS
 // ============================================================
-async function loadLeaveTypes() {
-    try {
-        const data = await apiFetch(`${BASE_URL}/leave/types`);
-        leaveTypes = Array.isArray(data)
-            ? data.filter(t => t.isActive).map(t => t.name)
-            : [];
-
-        // Populate dropdowns
-        const filterType = document.getElementById('filterType');
-        if (filterType) {
-            filterType.innerHTML = '<option value="all">All Types</option>' +
-                leaveTypes.map(lt => `<option value="${lt}">${lt}</option>`).join('');
-        }
-        const apType = document.getElementById('ap-type');
-        if (apType) {
-            apType.innerHTML = '<option value="">Select leave type</option>' +
-                leaveTypes.map(lt => `<option value="${lt}">${lt}</option>`).join('');
-        }
-    } catch (err) {
-        console.error('Leave types load failed:', err);
-        leaveTypes = [];
-        // dropdowns remain empty — no fake data
+function populateDropdowns() {
+    const filterType = document.getElementById('filterType');
+    if (filterType) {
+        filterType.innerHTML = '<option value="all">All Types</option>' +
+            LEAVE_TYPES.map(lt => `<option value="${lt}">${lt}</option>`).join('');
+    }
+    const apType = document.getElementById('ap-type');
+    if (apType) {
+        apType.innerHTML = '<option value="">Select leave type</option>' +
+            LEAVE_TYPES.map(lt => `<option value="${lt}">${lt}</option>`).join('');
     }
 }
 
 // ============================================================
-//  3. LOAD BALANCE  — NO FALLBACK
-// ============================================================
-async function loadBalance() {
-    if (!CURRENT_EMP.id) { balanceData = {}; return; }
-    try {
-        const data = await apiFetch(`${BASE_URL}/leave/balance?empId=${CURRENT_EMP.id}&year=${YEAR}`);
-        balanceData = data || {};
-    } catch (err) {
-        console.error('Balance load failed:', err);
-        balanceData = {};   // ✅ empty — kuch fake nahi
-        showToast('⚠️ Could not load balance. Contact HR.', 'error');
-    }
-}
-
-// ============================================================
-//  4. LOAD MY LEAVES  — NO FALLBACK
-// ============================================================
-async function loadMyLeaves() {
-    if (!CURRENT_EMP.id) { myLeaves = []; return; }
-    try {
-        const data = await apiFetch(`${BASE_URL}/leave/requests/employee/${CURRENT_EMP.id}`);
-        myLeaves = Array.isArray(data) ? data : [];
-    } catch (err) {
-        console.error('My leaves load failed:', err);
-        myLeaves = [];   // ✅ empty — kuch fake nahi
-        showToast('⚠️ Could not load leave applications.', 'error');
-    }
-}
-
-// ============================================================
-//  5. UPDATE STATS  — shows — when no data
+//  UPDATE STATS
 // ============================================================
 function updateStats() {
-    const hasBalance = balanceData && balanceData.totalAllotted != null;
+    const hasBalance = BALANCE_DATA && BALANCE_DATA.totalAllotted != null;
 
-    document.getElementById('statTotal').textContent     = hasBalance ? balanceData.totalAllotted  : '—';
-    document.getElementById('statUsed').textContent      = hasBalance ? balanceData.totalUsed      : '—';
-    document.getElementById('statRemaining').textContent = hasBalance ? balanceData.totalRemaining : '—';
+    document.getElementById('statTotal').textContent     = hasBalance ? BALANCE_DATA.totalAllotted  : '—';
+    document.getElementById('statUsed').textContent      = hasBalance ? BALANCE_DATA.totalUsed      : '—';
+    document.getElementById('statRemaining').textContent = hasBalance ? BALANCE_DATA.totalRemaining : '—';
     document.getElementById('statPending').textContent   = myLeaves.filter(r => r.status === 'pending').length || 0;
 
     const pending = myLeaves.filter(r => r.status === 'pending').length;
@@ -1287,9 +1303,9 @@ function updateStats() {
 }
 
 // ============================================================
-//  6. SUBMIT LEAVE
+//  SUBMIT LEAVE
 // ============================================================
-async function submitLeave() {
+function submitLeave() {
     const leaveType   = document.getElementById('ap-type').value;
     const days        = parseInt(document.getElementById('ap-days').value) || 0;
     const fromDate    = document.getElementById('ap-from').value;
@@ -1304,48 +1320,54 @@ async function submitLeave() {
     if (!reason)      { showToast('Please enter a Reason!', 'error');            return; }
 
     const payload = {
-        empId:       CURRENT_EMP.id,
-        empName:     CURRENT_EMP.name,
-        department:  CURRENT_EMP.dept,
-        empType:     CURRENT_EMP.empType,
+        id: nextId++,
         leaveType,
         fromDate,
         toDate,
         numberOfDays: days,
         reason,
         description,
-        status: 'pending'
+        status: 'pending',
+        addedOn: new Date().toISOString(),
+        actionBy: null,
+        actionDate: null,
+        remarks: null
     };
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Submitting...';
 
-    try {
-        const saved = await apiFetch(`${BASE_URL}/leave/requests`, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        });
-        myLeaves.unshift(saved);
-        await loadBalance();
+    // Simulate async
+    setTimeout(() => {
+        myLeaves.unshift(payload);
+
+        // Update balance (dummy reduction)
+        if (BALANCE_DATA.balances[leaveType]) {
+            const b = BALANCE_DATA.balances[leaveType];
+            const actualDays = days;
+            b.used += actualDays;
+            b.remaining = Math.max(0, b.allot - b.used);
+            BALANCE_DATA.totalUsed += actualDays;
+            BALANCE_DATA.totalRemaining = Math.max(0, BALANCE_DATA.totalAllotted - BALANCE_DATA.totalUsed);
+        }
+
         updateStats();
         closeModal('applyModal');
         showToast('✅ Leave request submitted! Awaiting HR approval.', 'success');
         renderApplications();
         renderOverview();
         renderCalendar();
-    } catch (err) {
-        showToast('❌ ' + (err.message || 'Submission failed.'), 'error');
-    } finally {
+
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Request';
-    }
+    }, 600);
 }
 
 // ============================================================
-//  7. CANCEL LEAVE
+//  CANCEL LEAVE
 // ============================================================
-async function confirmCancel() {
+function confirmCancel() {
     const request = myLeaves.find(x => x.id === cancelTargetId);
     if (!request) return;
 
@@ -1353,33 +1375,35 @@ async function confirmCancel() {
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Cancelling...';
 
-    try {
-        await apiFetch(`${BASE_URL}/leave/requests/${request.id}/action`, {
-            method: 'POST',
-            body: JSON.stringify({
-                action:   'reject',
-                remarks:  document.getElementById('cancelReason').value || 'Cancelled by employee',
-                actionBy: CURRENT_EMP.name
-            })
-        });
-        await loadMyLeaves();
-        await loadBalance();
+    setTimeout(() => {
+        request.status = 'rejected';
+        request.remarks = document.getElementById('cancelReason').value || 'Cancelled by employee';
+        request.actionBy = 'Employee';
+        request.actionDate = new Date().toISOString();
+
+        // Revert balance
+        if (BALANCE_DATA.balances[request.leaveType]) {
+            const b = BALANCE_DATA.balances[request.leaveType];
+            b.used = Math.max(0, b.used - request.numberOfDays);
+            b.remaining = b.allot - b.used;
+            BALANCE_DATA.totalUsed = Math.max(0, BALANCE_DATA.totalUsed - request.numberOfDays);
+            BALANCE_DATA.totalRemaining = BALANCE_DATA.totalAllotted - BALANCE_DATA.totalUsed;
+        }
+
         updateStats();
         closeModal('cancelModal');
         renderApplications();
         renderOverview();
         renderCalendar();
         showToast('Leave request cancelled.', 'info');
-    } catch (err) {
-        showToast('❌ ' + (err.message || 'Cancel failed.'), 'error');
-    } finally {
+
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-trash"></i> Yes, Cancel';
-    }
+    }, 400);
 }
 
 // ============================================================
-//  8. OPEN APPLY MODAL
+//  OPEN APPLY MODAL
 // ============================================================
 function openApplyModal() {
     document.getElementById('ap-empId').value   = CURRENT_EMP.id;
@@ -1398,7 +1422,7 @@ function openApplyModal() {
 }
 
 // ============================================================
-//  9. FORM HELPERS
+//  FORM HELPERS
 // ============================================================
 function apResetForm() {
     ['ap-type','ap-mode','ap-from','ap-to','ap-reason','ap-desc'].forEach(id => {
@@ -1446,9 +1470,9 @@ function apCheckBalance() {
     const panel     = document.getElementById('ap-balPanel');
     if (!panel) return;
 
-    if (!leaveType || !balanceData.balances) { panel.style.display = 'none'; return; }
+    if (!leaveType || !BALANCE_DATA.balances) { panel.style.display = 'none'; return; }
 
-    const bal = balanceData.balances[leaveType];
+    const bal = BALANCE_DATA.balances[leaveType];
     if (!bal) { panel.style.display = 'none'; return; }
 
     const ok = days === 0 || bal.remaining >= days;
@@ -1460,7 +1484,7 @@ function apCheckBalance() {
 }
 
 // ============================================================
-//  10. RENDER — OVERVIEW
+//  RENDER — OVERVIEW
 // ============================================================
 function renderOverview() {
     renderQuickBalanceCards();
@@ -1473,10 +1497,9 @@ function renderQuickBalanceCards() {
     const container = document.getElementById('quickBalanceCards');
     if (!container) return;
 
-    const balances = balanceData.balances || {};
-    const hasData  = leaveTypes.length > 0 && Object.keys(balances).length > 0;
+    const balances = BALANCE_DATA.balances || {};
+    const hasData  = LEAVE_TYPES.length > 0 && Object.keys(balances).length > 0;
 
-    // ✅ Agar koi data nahi toh empty state — koi fake card nahi
     if (!hasData) {
         container.innerHTML = `<div style="grid-column:1/-1;">
             ${emptyState('info-circle', 'No leave balance data available.', 'Please contact HR to configure your leave policy.')}
@@ -1485,7 +1508,7 @@ function renderQuickBalanceCards() {
     }
 
     const colors = ['#1f6f7f','#16a34a','#1254a4','#ea580c'];
-    container.innerHTML = leaveTypes.map((type, i) => {
+    container.innerHTML = LEAVE_TYPES.map((type, i) => {
         const bal = balances[type] || { allot: 0, used: 0, remaining: 0 };
         const pct = bal.allot ? Math.round((bal.used / bal.allot) * 100) : 0;
         const fc  = pct > 70 ? '#dc2626' : pct > 40 ? '#ea580c' : '#16a34a';
@@ -1529,12 +1552,12 @@ function renderPolicyInfo() {
     const container = document.getElementById('policyInfo');
     if (!container) return;
 
-    const balances = balanceData.balances || {};
-    if (!leaveTypes.length) {
+    const balances = BALANCE_DATA.balances || {};
+    if (!LEAVE_TYPES.length) {
         container.innerHTML = '<p style="font-size:12px;color:#64748b;">No policy configured.</p>';
         return;
     }
-    container.innerHTML = leaveTypes.map(type => {
+    container.innerHTML = LEAVE_TYPES.map(type => {
         const bal = balances[type];
         return `<div class="policy-row"><span>${type}</span><strong>${bal ? bal.allot + ' days/yr' : '—'}</strong></div>`;
     }).join('');
@@ -1545,22 +1568,22 @@ function renderMiniDonut() {
     if (!ctx) return;
     if (miniChart) { miniChart.destroy(); miniChart = null; }
 
-    const balances = balanceData.balances || {};
-    const hasData  = leaveTypes.length > 0 && Object.keys(balances).length > 0;
+    const balances = BALANCE_DATA.balances || {};
+    const hasData  = LEAVE_TYPES.length > 0 && Object.keys(balances).length > 0;
     if (!hasData) return;
 
     const colors = ['#1f6f7f','#16a34a','#1254a4','#ea580c'];
-    const used   = leaveTypes.map(t => balances[t]?.used || 0);
+    const used   = LEAVE_TYPES.map(t => balances[t]?.used || 0);
     const total  = used.reduce((a, b) => a + b, 0);
-    if (!total) return;  // sabka used 0 ho toh chart mat banao
+    if (!total) return;
 
     miniChart = new Chart(ctx.getContext('2d'), {
         type: 'doughnut',
         data: {
-            labels: leaveTypes,
+            labels: LEAVE_TYPES,
             datasets: [{
                 data: used,
-                backgroundColor: colors.slice(0, leaveTypes.length),
+                backgroundColor: colors.slice(0, LEAVE_TYPES.length),
                 borderWidth: 0,
                 hoverOffset: 8
             }]
@@ -1577,7 +1600,7 @@ function renderMiniDonut() {
 }
 
 // ============================================================
-//  11. RENDER — MY APPLICATIONS
+//  RENDER — MY APPLICATIONS
 // ============================================================
 function renderApplications() {
     const statusFilter = document.getElementById('filterStatus').value;
@@ -1675,7 +1698,7 @@ function viewDetail(id) {
 }
 
 // ============================================================
-//  12. RENDER — BALANCE TAB
+//  RENDER — BALANCE TAB
 // ============================================================
 function renderBalance() {
     renderBalanceCards();
@@ -1686,8 +1709,8 @@ function renderBalanceCards() {
     const container = document.getElementById('balanceCards');
     if (!container) return;
 
-    const balances = balanceData.balances || {};
-    const hasData  = leaveTypes.length > 0 && Object.keys(balances).length > 0;
+    const balances = BALANCE_DATA.balances || {};
+    const hasData  = LEAVE_TYPES.length > 0 && Object.keys(balances).length > 0;
 
     if (!hasData) {
         container.innerHTML = `<div style="grid-column:1/-1;">
@@ -1697,7 +1720,7 @@ function renderBalanceCards() {
     }
 
     const colors = ['#1f6f7f','#16a34a','#1254a4','#ea580c'];
-    container.innerHTML = leaveTypes.map((type, i) => {
+    container.innerHTML = LEAVE_TYPES.map((type, i) => {
         const bal = balances[type] || { allot:0, used:0, remaining:0 };
         const pct = bal.allot ? Math.round((bal.used / bal.allot) * 100) : 0;
         const fc  = pct > 70 ? '#dc2626' : pct > 40 ? '#ea580c' : '#16a34a';
@@ -1748,7 +1771,7 @@ function renderBalanceDetailTable() {
 }
 
 // ============================================================
-//  13. CALENDAR
+//  CALENDAR
 // ============================================================
 function renderCalendar() {
     const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1802,7 +1825,7 @@ function changeMonth(delta) {
 }
 
 // ============================================================
-//  14. TABS
+//  TABS
 // ============================================================
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1821,7 +1844,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ============================================================
-//  15. EXPORT
+//  EXPORT
 // ============================================================
 function exportMyLeaves() {
     if (!myLeaves.length) { showToast('Nothing to export!', 'error'); return; }
@@ -1842,7 +1865,7 @@ function exportMyLeaves() {
 }
 
 // ============================================================
-//  16. SIDEBAR & DROPDOWN
+//  SIDEBAR & DROPDOWN
 // ============================================================
 document.getElementById('collapseSidebarBtn').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('collapsed');
@@ -1871,33 +1894,16 @@ document.addEventListener('click', () => {
 });
 
 // ============================================================
-//  17. INIT
+//  INIT
 // ============================================================
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Employee Leave page initializing...');
-
-    // Stats ko — set karo jab tak load hota hai
-    ['statTotal','statUsed','statRemaining','statPending'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = '...';
-    });
-
-    try {
-        loadEmployeeProfile();          // sync — localStorage se
-        await loadLeaveTypes();         // DB se — no fallback
-        await loadBalance();            // DB se — no fallback
-        await loadMyLeaves();           // DB se — no fallback
-
-        updateStats();
-        renderOverview();
-        renderApplications();
-        renderCalendar();
-
-        console.log('Initialization complete.');
-    } catch (err) {
-        console.error('Init failed:', err);
-        showToast('⚠️ ' + err.message, 'error');
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    loadEmployeeProfile();
+    populateDropdowns();
+    updateStats();
+    renderOverview();
+    renderApplications();
+    renderBalance();
+    renderCalendar();
 });
 </script>
 </body>
