@@ -161,14 +161,14 @@
               <span id="userName" class="font-semibold text-[14px] text-heading">Employee</span>
               <span id="userRole" class="text-[12px] text-muted"></span>
             </div>
-            <i class="text-xs fas fa-chevron-down text-muted"></i>
+            <!-- <i class="text-xs fas fa-chevron-down text-muted"></i> -->
           </button>
-
+<!-- 
           <div id="profileDropdown" class="absolute top-[110%] right-0 min-w-[200px] p-1.5 bg-white/95 backdrop-blur border border-border rounded-2xl shadow-xl opacity-0 invisible -translate-y-2 transition-all duration-200 z-[1100]">
             <a href="#" class="flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-primary-lt hover:text-primary transition-colors no-underline"><i class="fas fa-user-circle"></i>My Profile</a>
             <div class="my-1 border-t border-border"></div>
             <button class="logout-item flex items-center gap-2.5 w-full px-3 py-2.5 text-sm font-medium text-red-600 rounded-xl hover:bg-primary-lt hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"><i class="fas fa-sign-out-alt"></i>Logout</button>
-          </div>
+          </div> -->
 
         </div>
       </div>
@@ -618,8 +618,8 @@ document.addEventListener('DOMContentLoaded', function () {
       +   '<div class="ps-company-row">'
       +     logoHtml
       +     '<div>'
-      +       '<div class="ps-company-name">Sustainable Integrated Environmental Consultant.</div>'
-      +       '<div class="ps-company-addr">Office-401, Sanskriti Arcade, Kaspate Wasti, Wakad, Pune \u2013 411057</div>'
+      // +       '<div class="ps-company-name">Sustainable Integrated Environmental Consultant.</div>'
+      +       '<div class="ps-company-addr">Suite-305, Sunrise Business Center, Maple Avenue, Riverdale, Pune – 411998</div>'
       +     '</div>'
       +   '</div>'
       +   '<div class="ps-month-row">PAYSLIP FOR THE MONTH OF ' + ml.toUpperCase() + ' ' + s.payrollYear + '</div>'
@@ -741,9 +741,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var textX = logoBase64 ? M+26 : M+6;
 
     doc.setFont('helvetica','bold'); doc.setFontSize(12);
-    doc.text('Sustainable Integrated Environmental Consultant.', textX, 20);
+    doc.text('Kunash Media Solutions.', textX, 20);
     doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
-    doc.text('Office-401, Sanskriti Arcade, Kaspate Wasti, Wakad, Pune - 411057', textX, 27);
+    doc.text('Suite-305, Sunrise Business Center, Maple Avenue, Riverdale, Pune – 411998', textX, 27);
     doc.setFont('helvetica','bold'); doc.setFontSize(11);
     doc.text('PAYSLIP', W-M-6, 20, { align:'right' });
     doc.setFont('helvetica','normal'); doc.setFontSize(8);
@@ -887,7 +887,7 @@ document.addEventListener('DOMContentLoaded', function () {
     doc.setFont('helvetica','bold'); doc.setFontSize(8);
     doc.text('Authorised Signatory', W-M-6, y+8, { align:'right' });
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor.apply(doc, MUTED);
-    doc.text('Sustainable Integrated Environmental Consultant.', W-M-6, y+13, { align:'right' });
+    doc.text('Kunash Media Solutions', W-M-6, y+13, { align:'right' });
     doc.setFontSize(7);
     doc.text('Page 1 of 1  |  Generated on ' + new Date().toLocaleDateString('en-IN'), W/2, 290, { align:'center' });
 
