@@ -279,6 +279,23 @@ body {
 .stat-icon.success { background: #eaf7ee; color: var(--success); }
 .stat-icon.danger  { background: #fdecec; color: var(--danger); }
 .stat-icon.accent  { background: #fff4e6; color: var(--warning); }
+.stat-icon.purple  { background: #f3e8ff; color: #6d28d9; }
+
+/* ============================================================
+   OVERNIGHT DUTY OT-SPLIT + DESIGNATION-BASED OT vs C-OFF
+   ============================================================ */
+.hours-sub {
+  margin-top: 3px; font-size: 10.5px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+}
+.tag-ot, .tag-coff {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 7px; border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+}
+.tag-ot   { background: #fff4e6; color: #b45309; border: 1px solid rgba(180,83,9,0.25); }
+.tag-coff { background: #f3e8ff; color: #6d28d9; border: 1px solid rgba(109,40,217,0.25); }
+.tag-ot i, .tag-coff i { font-size: 9px; }
 
 .stat-title {
   font-size: 11px; text-transform: uppercase;
@@ -686,6 +703,87 @@ body {
 }
 .edit-btn-save:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
 .edit-btn-save:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ============================================================
+   CROSS-SHIFT / SHIFT OVERLAP ATTENDANCE MODULE
+   ============================================================ */
+
+/* ── Shift badge (per-shift color, shown in table + requests) ── */
+.shift-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.shift-badge.shift-1st  { background: #e6f4f6; color: #0d7d9c; }
+.shift-badge.shift-2nd  { background: #eef2ff; color: #1B738C; }
+.shift-badge.shift-3rd  { background: #f3e8ff; color: #6d28d9; }
+.shift-badge.shift-none { background: #f1f5f9; color: var(--text-muted); }
+
+/* ── "Overnight" tag — punch crossed midnight, split across dates ── */
+.tag-overnight {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: 6px; padding: 2px 7px; border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+  background: #fff4e0; color: #b45309;
+  border: 1px solid rgba(180,83,9,0.25);
+  cursor: help;
+}
+.tag-overnight i { font-size: 9px; }
+
+/* ── "Shift Change Approved" note under a table row ── */
+.shift-change-note {
+  display: block; margin-top: 3px; font-size: 10.5px;
+  color: var(--primary-dark); font-weight: 500;
+}
+.shift-change-note i { color: var(--primary); margin-right: 3px; }
+
+/* ── Request Shift Change button (table-header-bar) ── */
+.btn-shift-change {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 16px; border: 1px solid var(--primary);
+  background: #fff; color: var(--primary);
+  border-radius: 8px; font-size: 12.5px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
+}
+.btn-shift-change:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
+
+/* ── My Shift Change Requests panel ── */
+.shift-requests-panel {
+  background: #fff; border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;
+}
+.shift-requests-panel .panel-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 700; color: var(--primary-dark);
+  margin-bottom: 12px;
+}
+.shift-requests-panel .panel-title i { color: var(--primary); }
+.shift-requests-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.shift-requests-table th {
+  text-align: left; padding: 8px 10px; color: var(--text-muted);
+  font-weight: 600; font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.4px; border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+.shift-requests-table td {
+  padding: 9px 10px; border-bottom: 1px solid #f1f5f9; color: var(--text-dark, #334155);
+}
+.shift-requests-empty { padding: 14px 4px; color: var(--text-muted); font-size: 12.5px; }
+
+.req-status-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+}
+.req-status-pill.pending  { background: #fff4e0; color: #b45309; }
+.req-status-pill.approved { background: #e8f5e9; color: var(--success, #2e7d32); }
+.req-status-pill.rejected { background: #fdeaea; color: #c0392b; }
+
+/* ── Shift select in modal ── */
+.edit-select {
+  width: 100%; padding: 10px 12px; border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 8px; font-size: 13px; font-family: inherit;
+  background: #fff; color: var(--text-dark, #334155); margin-bottom: 12px;
+}
+.edit-select:focus { outline: none; border-color: var(--primary); }
 
 /* ============================================================
    RESPONSIVE

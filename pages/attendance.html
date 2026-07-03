@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Attendance | SIEC</title>
+  <title>Attendance</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
@@ -166,6 +166,15 @@
           <div class="stat-value" id="todayHoursDisplay">0.0 hrs</div>
           <div class="stat-sub" id="runningTimerSub">Total recorded today</div>
         </div>
+        <!-- Overnight Duty OT-Split + Designation-based OT vs C-off Module -->
+        <div class="stat-card" id="otCoffCard">
+          <div class="stat-top">
+            <div class="stat-icon accent" id="otCoffIcon"><i class="fas fa-bolt"></i></div>
+            <div class="stat-title" id="otCoffTitle">Overtime Hours (This Month)</div>
+          </div>
+          <div class="stat-value" id="otCoffValue">0.0 hrs</div>
+          <div class="stat-sub" id="otCoffSub">From overnight-duty split</div>
+        </div>
       </div>
 
       <!-- Info Card (replaces manual Check In/Out action card) -->
@@ -210,18 +219,48 @@
         </button>
       </div>
 
+      <!-- Cross-Shift / Shift Overlap — My Shift Change Requests -->
+      <div class="shift-requests-panel">
+        <div class="panel-title"><i class="fas fa-random"></i> My Shift Change Requests</div>
+        <div id="shiftRequestsPanelBody">
+          <div class="shift-requests-empty">No shift change requests yet.</div>
+        </div>
+      </div>
+
+      <!-- OD (On-Duty) Apply/Approve Workflow Module -->
+      <div class="shift-requests-panel">
+        <div class="panel-title" style="justify-content:space-between;">
+          <span><i class="fas fa-route"></i> My OD (On-Duty) Requests</span>
+          <button class="btn-shift-change" id="openOdBtn">
+            <i class="fas fa-plus"></i> Apply for OD
+          </button>
+        </div>
+        <div id="odRequestsPanelBody">
+          <div class="shift-requests-empty">No OD (On-Duty) requests yet.</div>
+        </div>
+      </div>
+
       <!-- Table -->
       <div class="table-wrapper">
         <div class="table-header-bar">
           <h3><i class="fas fa-calendar-alt"></i> Attendance History</h3>
-          <button class="btn-view-month" id="viewMonthBtn">
-            <i class="fas fa-chart-line"></i> Monthly Summary
-          </button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-shift-change" id="openShiftChangeBtn">
+              <i class="fas fa-random"></i> Request Shift Change
+            </button>
+            <button class="btn-shift-change" id="viewOdReportBtn">
+              <i class="fas fa-route"></i> OD Report
+            </button>
+            <button class="btn-view-month" id="viewMonthBtn">
+              <i class="fas fa-chart-line"></i> Monthly Summary
+            </button>
+          </div>
         </div>
         <table class="attendance-table">
           <thead>
             <tr>
               <th>Date</th>
+              <th>Shift</th>
               <th>Check-In</th>
               <th>Check-Out</th>
               <th>Total Hours</th>
@@ -230,7 +269,7 @@
             </tr>
           </thead>
           <tbody id="attendanceTableBody">
-            <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr>
+            <tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted);">Loading…</td></tr>
           </tbody>
         </table>
       </div>
@@ -265,7 +304,7 @@
             <div class="monthly-table-wrapper">
               <table class="monthly-table">
                 <thead>
-                  <tr><th>Date</th><th>Day</th><th>Check-In</th><th>Check-Out</th><th>Hours</th><th>Status</th></tr>
+                  <tr><th>Date</th><th>Day</th><th>Shift</th><th>Check-In</th><th>Check-Out</th><th>Hours</th><th>Status</th></tr>
                 </thead>
                 <tbody id="monthlyTableBody"></tbody>
               </table>
@@ -324,6 +363,144 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     Cross-Shift / Shift Overlap Attendance Module
+     — Request Shift Change Modal
+     Employee applies for a shift change (e.g. covering the next
+     shift due to an emergency / handover). Once the HOD approves
+     it (via Admin), the overlapping punch is recognized and BOTH
+     calendar days are marked "Present" instead of an anomaly.
+══════════════════════════════════════════ -->
+<div class="edit-modal-overlay" id="shiftChangeModal">
+  <div class="edit-modal-box">
+    <div class="edit-modal-header">
+      <div class="edit-modal-title">
+        <i class="fas fa-random"></i>
+        <span>Request Shift Change</span>
+      </div>
+      <button class="edit-modal-close" id="shiftChangeModalClose"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="edit-modal-body">
+      <label class="edit-label">Effective Date</label>
+      <input type="date" id="shiftChangeDate" class="edit-select" />
+
+      <label class="edit-label">Current Shift</label>
+      <input type="text" id="shiftChangeCurrent" class="edit-select" readonly />
+
+      <label class="edit-label">Requested Shift</label>
+      <select id="shiftChangeRequested" class="edit-select">
+        <option value="1st Shift">1st Shift (Morning)</option>
+        <option value="2nd Shift">2nd Shift (General)</option>
+        <option value="3rd Shift">3rd Shift (Night)</option>
+      </select>
+
+      <label class="edit-label">Reason for shift change</label>
+      <textarea
+        id="shiftChangeReason"
+        class="edit-textarea"
+        placeholder="e.g. Covering the next shift as the incoming employee is on emergency leave — will continue duty past my shift end."
+        rows="4"
+        maxlength="500"
+      ></textarea>
+      <div class="edit-char-hint"><span id="shiftChangeCharCount">0</span>/500</div>
+      <p style="font-size:11.5px;color:var(--text-muted);margin-top:8px;">
+        <i class="fas fa-info-circle"></i>
+        Requires HOD approval. Once approved, both the shift-start day and the
+        overlapping next day will be marked <strong>Present</strong> for this transition.
+      </p>
+    </div>
+
+    <div class="edit-modal-footer">
+      <button class="edit-btn-cancel" id="shiftChangeModalCancel">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="edit-btn-save" id="shiftChangeModalSave">
+        <i class="fas fa-paper-plane"></i> Submit Request
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OD (On-Duty) Apply/Approve Workflow Module
+     — Apply for OD Modal
+══════════════════════════════════════════ -->
+<div class="edit-modal-overlay" id="odModal">
+  <div class="edit-modal-box">
+    <div class="edit-modal-header">
+      <div class="edit-modal-title">
+        <i class="fas fa-route"></i>
+        <span>Apply for OD (On-Duty)</span>
+      </div>
+      <button class="edit-modal-close" id="odModalClose"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="edit-modal-body">
+      <label class="edit-label">OD Date</label>
+      <input type="date" id="odDate" class="edit-select" />
+
+      <label class="edit-label">Location / Client</label>
+      <input type="text" id="odLocation" class="edit-select" placeholder="e.g. Client Site — Whitefield, Bengaluru" maxlength="120" />
+
+      <label class="edit-label">Purpose of visit</label>
+      <textarea
+        id="odReason"
+        class="edit-textarea"
+        placeholder="e.g. On-site client demo and requirement walkthrough…"
+        rows="4"
+        maxlength="500"
+      ></textarea>
+      <div class="edit-char-hint"><span id="odCharCount">0</span>/500</div>
+      <p style="font-size:11.5px;color:var(--text-muted);margin-top:8px;">
+        <i class="fas fa-info-circle"></i>
+        Requires manager approval. Once approved, this date is marked <strong>OD</strong> in your attendance.
+      </p>
+    </div>
+
+    <div class="edit-modal-footer">
+      <button class="edit-btn-cancel" id="odModalCancel">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="edit-btn-save" id="odModalSave">
+        <i class="fas fa-paper-plane"></i> Submit Request
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     OD (On-Duty) Report Module
+══════════════════════════════════════════ -->
+<div id="odReportModal" class="monthly-modal" style="display:none;">
+  <div class="monthly-modal-content">
+    <div class="monthly-modal-header">
+      <h2><i class="fas fa-route"></i> OD (On-Duty) Report</h2>
+      <button class="modal-close" id="closeOdReportBtn">&times;</button>
+    </div>
+    <div class="monthly-modal-body">
+      <div class="monthly-stats">
+        <div class="stat-box"><div class="stat-label">Total OD Days (Attendance)</div><div class="stat-number primary" id="odReportTotalDays">0</div></div>
+        <div class="stat-box"><div class="stat-label">Approved OD Requests</div><div class="stat-number success" id="odReportApproved">0</div></div>
+        <div class="stat-box"><div class="stat-label">Pending OD Requests</div><div class="stat-number warning" id="odReportPending">0</div></div>
+      </div>
+      <div class="monthly-table-wrapper">
+        <table class="monthly-table">
+          <thead>
+            <tr><th>Date</th><th>Location / Client</th><th>Reason</th><th>Approver</th><th>Status</th></tr>
+          </thead>
+          <tbody id="odReportTableBody"></tbody>
+        </table>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+        <button class="btn-view-month" id="downloadOdReportBtn">
+          <i class="fas fa-download"></i> Download CSV
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
@@ -362,6 +539,9 @@
   // Character counter for textarea
   document.getElementById('editNotesInput').addEventListener('input', function() {
     document.getElementById('editCharCount').textContent = this.value.length;
+  });
+  document.getElementById('shiftChangeReason').addEventListener('input', function() {
+    document.getElementById('shiftChangeCharCount').textContent = this.value.length;
   });
 </script>
 <script>
