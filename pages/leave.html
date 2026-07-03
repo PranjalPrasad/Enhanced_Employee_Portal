@@ -1633,8 +1633,8 @@ function renderApplications() {
             <td>${r.remarks || (r.status === 'pending' ? 'Awaiting review' : '—')}</td>
             <td onclick="event.stopPropagation()">
                 ${r.status === 'pending'
-                    ? `<button onclick="openCancelModal(${r.id})" style="background:#dc2626;color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;"><i class="fas fa-times"></i> Cancel</button>`
-                    : `<button onclick="viewDetail(${r.id})" style="background:none;border:1px solid #1f6f7f;color:#1f6f7f;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;"><i class="fas fa-eye"></i> View</button>`}
+                    ? `<button onclick="openCancelModal(${r.id})" style="background:#dc2626;color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;"><i class="fas fa-times"></i></button>`
+                    : `<button onclick="viewDetail(${r.id})" style="background:none;border:1px solid #1f6f7f;color:#1f6f7f;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;"><i class="fas fa-eye"></i></button>`}
             </td>
         </tr>`).join('');
 }
