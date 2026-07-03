@@ -164,7 +164,7 @@
 
                     <div class="notification-bell">
                         <button class="icon-btn" id="notificationBtn">
-                            <i class="far fa-bell"></i><span class="notification-badge">0</span>
+                            <i class="far fa-bell"></i><span class="notification-badge">3</span>
                         </button>
                     </div>
 
@@ -232,7 +232,7 @@
                         </div>
                         <div class="stat-info">
                             <h3>Working Hours</h3>
-                            <p class="stat-value">-</p>
+                            <p class="stat-value">7h 45m</p>
                         </div>
                     </div>
 
@@ -243,8 +243,8 @@
                         </div>
                         <div class="stat-info">
                             <h3>Leave Balance</h3>
-                            <p class="stat-value">-</p>
-                            <span class="stat-text">-</span>
+                            <p class="stat-value">12</p>
+                            <span class="stat-text">Days Remaining</span>
                         </div>
                     </div>
                 </div>
@@ -389,6 +389,77 @@ document.addEventListener('DOMContentLoaded', function () {
 
  <!-- <script src="/auth.js"></script> -->
  <script src="../js/dashboard.js"></script>
+
+ <!-- Dummy chart data (added, does not modify dashboard.js) -->
+ <script>
+   document.addEventListener('DOMContentLoaded', function () {
+     // Attendance Weekly Overview (line chart)
+     const weeklyCtx = document.getElementById('attendanceChart');
+     if (weeklyCtx && typeof Chart !== 'undefined') {
+       new Chart(weeklyCtx, {
+         type: 'line',
+         data: {
+           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+           datasets: [{
+             label: 'Hours Worked',
+             data: [8, 7.5, 8, 6.5, 8, 4, 0],
+             borderColor: '#3b82f6',
+             backgroundColor: 'rgba(59, 130, 246, 0.15)',
+             tension: 0.35,
+             fill: true,
+             pointRadius: 4,
+             pointBackgroundColor: '#3b82f6'
+           }]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: { legend: { display: false } },
+           scales: {
+             y: { beginAtZero: true, suggestedMax: 10 }
+           }
+         }
+       });
+     }
+
+     // Attendance Monthly Overview (bar chart)
+     const monthlyCtx = document.getElementById('taskChart');
+     if (monthlyCtx && typeof Chart !== 'undefined') {
+       new Chart(monthlyCtx, {
+         type: 'bar',
+         data: {
+           labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+           datasets: [
+             {
+               label: 'Present',
+               data: [5, 4, 5, 3],
+               backgroundColor: '#22c55e'
+             },
+             {
+               label: 'Absent',
+               data: [0, 1, 0, 1],
+               backgroundColor: '#ef4444'
+             },
+             {
+               label: 'Leave',
+               data: [0, 0, 0, 1],
+               backgroundColor: '#f97316'
+             }
+           ]
+         },
+         options: {
+           responsive: true,
+           maintainAspectRatio: false,
+           plugins: { legend: { position: 'bottom' } },
+           scales: {
+             x: { stacked: true },
+             y: { stacked: true, beginAtZero: true, suggestedMax: 6 }
+           }
+         }
+       });
+     }
+   });
+ </script>
 
 </body>
 </html>
